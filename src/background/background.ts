@@ -13,6 +13,7 @@ let _initialized = false;
 const _queue: Array<{ patch: Partial<GlobalState> }> = [];
 
 let _capturedTabId: number | null = null;
+let _capturing: Promise<void> | null = null;
 
 function updateBadge(s: GlobalState): void {
   if (s.enabled && s.frequency !== A4_STANDARD_FREQUENCY) {
@@ -54,6 +55,24 @@ async function ensureOffscreenDocument(): Promise<void> {
 }
 
 async function handleStartTabCapture(
+  tabId: number,
+  _reason?: string,
+  _host?: string,
+): Promise<void> {
+  if (_capturing) {
+    await _capturing;
+    if (_capturedTabId === tabId) return;
+  }
+  const myPromise = doStartTabCapture(tabId, _reason, _host);
+  _capturing = myPromise;
+  try {
+    await myPromise;
+  } finally {
+    if (_capturing === myPromise) _capturing = null;
+  }
+}
+
+async function doStartTabCapture(
   tabId: number,
   _reason?: string,
   _host?: string,
@@ -120,12 +139,14 @@ async function handleStopTabCapture(): Promise<void> {
 function handleSetTabCapturePitch(): void {
   if (_capturedTabId === null) return;
   const pitch = computePitchRatio(state);
-  chrome.runtime.sendMessage({
-    target: "offscreen",
-    action: "setPitch",
-    pitch,
-    enabled: state.enabled,
-  });
+  chrome.runtime
+    .sendMessage({
+      target: "offscreen",
+      action: "setPitch",
+      pitch,
+      enabled: state.enabled,
+    })
+    .catch(() => {});
 }
 
 async function injectIntoExistingTabs(): Promise<void> {
