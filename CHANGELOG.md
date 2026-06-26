@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [2.1.6] - 2026-06-26
+
+### Added
+
+- Theme now follows the system preference (`prefers-color-scheme`) by default. The toggle is now a 3-state cycle: **Light → Dark → System (auto)**. The "System" option returns the popup to following the OS theme and continues tracking it.
+
+### Fixed
+
+- Theme is no longer baked into `localStorage`/`chrome.storage` when derived from the system preference — the popup now keeps tracking OS theme changes until the user explicitly toggles.
+- Removed dead `about.html` script that referenced non-existent DOM IDs (`status`, `frequency`, `mode`, `resetBtn`) and threw `TypeError` on load.
+
 ## [2.1.5] - 2026-06-26
 
 ### Added
