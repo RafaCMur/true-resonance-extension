@@ -10,5 +10,15 @@
   "questions": "Questions ?",
   "tooltipPitchOnly": "Change seulement la hauteur en maintenant la vitesse originale",
   "tooltipSpeedPitch": "Change à la fois la hauteur et la vitesse de lecture",
-  "upcomingBanner": "Prise en charge de Spotify bientôt disponible"
+  "spotifyBanner": "Spotify est disponible",
+  "settingsTitle": "Réglages",
+  "themeLabel": "Thème",
+  "themeDesc": "Système, clair ou sombre",
+  "languageLabel": "Langue",
+  "aboutLabel": "À propos",
+  "aboutDesc": "Version, auteur, liens",
+  "openAbout": "Ouvrir",
+  "resetLabel": "Réinitialiser tout",
+  "resetDesc": "Restaurer les valeurs par défaut",
+  "reset": "Réinitialiser"
 }

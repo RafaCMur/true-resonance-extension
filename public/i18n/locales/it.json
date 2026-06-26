@@ -10,5 +10,15 @@
   "questions": "Domande?",
   "tooltipPitchOnly": "Cambia solo il tono mantenendo la velocità originale",
   "tooltipSpeedPitch": "Cambia sia il tono che la velocità di riproduzione",
-  "upcomingBanner": "Supporto Spotify in arrivo"
+  "spotifyBanner": "Spotify è arrivato",
+  "settingsTitle": "Impostazioni",
+  "themeLabel": "Tema",
+  "themeDesc": "Sistema, chiaro o scuro",
+  "languageLabel": "Lingua",
+  "aboutLabel": "Informazioni",
+  "aboutDesc": "Versione, autore, link",
+  "openAbout": "Apri",
+  "resetLabel": "Ripristina tutto",
+  "resetDesc": "Ripristina valori predefiniti",
+  "reset": "Ripristina"
 }

@@ -10,5 +10,15 @@
   "questions": "Fragen?",
   "tooltipPitchOnly": "Ändert nur die Tonhöhe bei ursprünglicher Geschwindigkeit",
   "tooltipSpeedPitch": "Ändert sowohl Tonhöhe als auch Wiedergabegeschwindigkeit",
-  "upcomingBanner": "Spotify-Unterstützung bald verfügbar"
+  "spotifyBanner": "Spotify-Unterstützung ist da",
+  "settingsTitle": "Einstellungen",
+  "themeLabel": "Design",
+  "themeDesc": "System, hell oder dunkel",
+  "languageLabel": "Sprache",
+  "aboutLabel": "Über",
+  "aboutDesc": "Version, Autor, Links",
+  "openAbout": "Öffnen",
+  "resetLabel": "Alles zurücksetzen",
+  "resetDesc": "Standardwerte wiederherstellen",
+  "reset": "Zurücksetzen"
 }
