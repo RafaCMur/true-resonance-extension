@@ -8,19 +8,29 @@ import { i18n } from "../i18n/i18n";
 const elements = {
   // Control bar
   powerToggle: document.getElementById("powerToggle") as HTMLButtonElement,
-  themeToggle: document.getElementById("themeToggle") as HTMLButtonElement,
+  settingsBtn: document.getElementById("settingsBtn") as HTMLButtonElement,
+  backFromSettings: document.getElementById(
+    "backFromSettings"
+  ) as HTMLButtonElement,
+  openAboutBtn: document.getElementById("openAboutBtn") as HTMLButtonElement,
+  resetAllBtn: document.getElementById("resetAllBtn") as HTMLButtonElement,
+
+  // Views
+  mainView: document.getElementById("mainView") as HTMLElement,
+  settingsView: document.getElementById("settingsView") as HTMLElement,
+
+  // Settings: language
   languageBtn: document.getElementById("languageBtn") as HTMLButtonElement,
   languageMenu: document.getElementById("languageMenu") as HTMLElement,
-  settingsBtn: document.getElementById("settingsBtn") as HTMLButtonElement,
+
+  // Settings: theme segmented control
+  themeSegment: document.getElementById("themeSegment") as HTMLElement,
 
   // Layout
   disabledOverlay: document.getElementById("disabledOverlay") as HTMLElement,
   appContainer: document.querySelector(".app-container") as HTMLElement,
 
   // Controls
-  enableToggle: document.getElementById(
-    "enable-extension-toggle"
-  ) as HTMLInputElement,
   resetButton: document.getElementById("reset-btn") as HTMLButtonElement,
   pitchModeBtn: document.getElementById("pitch-mode-btn") as HTMLButtonElement,
   rateModeBtn: document.getElementById("rate-mode-btn") as HTMLButtonElement,
@@ -47,7 +57,6 @@ function updateUI(state: GlobalState) {
 
   // Update toggles
   elements.powerToggle?.classList.toggle("active", enabled);
-  if (elements.enableToggle) elements.enableToggle.checked = enabled;
 
   // Update mode buttons
   elements.rateModeBtn?.classList.toggle("active", mode === "rate");
@@ -64,6 +73,17 @@ function updateLanguageUI() {
     const key = element.getAttribute("data-i18n");
     if (key) element.textContent = i18n.t(key);
   });
+}
+
+// ======================== VIEW SWITCHING ========================
+function switchView(view: "main" | "settings"): void {
+  if (view === "settings") {
+    elements.mainView?.classList.add("hidden");
+    elements.settingsView?.classList.remove("hidden");
+  } else {
+    elements.settingsView?.classList.add("hidden");
+    elements.mainView?.classList.remove("hidden");
+  }
 }
 
 // ======================== THEME MANAGEMENT ========================
@@ -87,11 +107,7 @@ function getStoredTheme(result: { theme?: unknown }): ThemeChoice {
     : "system";
 }
 
-const themeIconMap: Record<ThemeChoice, string> = {
-  light: "images/theme-light.svg",
-  dark: "images/theme-dark.svg",
-  system: "images/theme-auto.svg",
-};
+const themeOrder: ThemeChoice[] = ["light", "system", "dark"];
 
 const themeManager = {
   current: "system" as ThemeChoice,
@@ -101,15 +117,30 @@ const themeManager = {
     const effective = resolveEffectiveTheme(choice);
     document.documentElement.setAttribute("data-theme", effective);
 
-    const icon = elements.themeToggle?.querySelector("img");
-    if (icon) {
-      icon.src = themeIconMap[choice];
+    // Move segmented slider to the matching segment
+    const idx = themeOrder.indexOf(choice);
+    const slider = elements.themeSegment?.querySelector(
+      ".segment-slider"
+    ) as HTMLElement | null;
+    if (slider && idx >= 0) {
+      slider.style.transform = `translateX(${idx * 100}%)`;
     }
-    elements.themeToggle?.classList.toggle("active", choice === "dark");
-    if (elements.themeToggle) {
-      const capitalized = choice.charAt(0).toUpperCase() + choice.slice(1);
-      elements.themeToggle.title =
-        choice === "system" ? "Theme: System (auto)" : `Theme: ${capitalized}`;
+    // Mark the matching segment button as active
+    elements.themeSegment
+      ?.querySelectorAll(".segment-btn")
+      .forEach((btn) => {
+        const t = (btn as HTMLElement).dataset.theme;
+        btn.classList.toggle("active", t === choice);
+      });
+  },
+
+  persist(choice: ThemeChoice) {
+    if (choice === "system") {
+      chrome.storage.local.set({ theme: "system" });
+      localStorage.removeItem("theme");
+    } else {
+      chrome.storage.local.set({ theme: choice });
+      localStorage.setItem("theme", choice);
     }
   },
 
@@ -127,25 +158,6 @@ const themeManager = {
         localStorage.removeItem("theme");
       }
     });
-  },
-
-  cycle() {
-    const next: ThemeChoice =
-      this.current === "system"
-        ? "light"
-        : this.current === "light"
-        ? "dark"
-        : "system";
-
-    this.apply(next);
-
-    if (next === "system") {
-      chrome.storage.local.set({ theme: "system" });
-      localStorage.removeItem("theme");
-    } else {
-      chrome.storage.local.set({ theme: next });
-      localStorage.setItem("theme", next);
-    }
   },
 };
 
@@ -218,10 +230,21 @@ elements.powerToggle?.addEventListener("click", () => {
   );
 });
 
-// Theme toggle
-elements.themeToggle?.addEventListener("click", () => themeManager.cycle());
+// Settings: open / back navigation
+elements.settingsBtn?.addEventListener("click", () => switchView("settings"));
+elements.backFromSettings?.addEventListener("click", () => switchView("main"));
 
-// Language dropdown
+// Settings: theme segmented control
+elements.themeSegment?.querySelectorAll(".segment-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const choice = (btn as HTMLElement).dataset.theme as ThemeChoice | undefined;
+    if (!choice) return;
+    themeManager.apply(choice);
+    themeManager.persist(choice);
+  });
+});
+
+// Settings: language dropdown (moved from top bar, same logic)
 if (elements.languageBtn && elements.languageMenu) {
   elements.languageBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -252,17 +275,24 @@ if (elements.languageBtn && elements.languageMenu) {
   });
 }
 
-// Settings button
-elements.settingsBtn?.addEventListener("click", () => {
+// Settings: about
+elements.openAboutBtn?.addEventListener("click", () => {
   chrome.tabs.create({ url: chrome.runtime.getURL("about.html") });
 });
 
-// Legacy toggle (compatibility)
-elements.enableToggle?.addEventListener("change", () => {
-  const patch = elements.enableToggle.checked
-    ? { enabled: true, frequency: currentFrequency }
-    : { enabled: false };
-  sendPatch(patch);
+// Settings: reset all
+elements.resetAllBtn?.addEventListener("click", () => {
+  const confirmed = window.confirm(
+    "Reset all settings? This clears frequency, mode, theme, and language.",
+  );
+  if (!confirmed) return;
+
+  chrome.storage.local.set({ state: { enabled: false, mode: "pitch", frequency: A4_STANDARD_FREQUENCY } });
+  chrome.storage.local.remove("theme");
+  chrome.storage.local.remove("language");
+  localStorage.removeItem("theme");
+  sendPatch({ enabled: false, mode: "pitch", frequency: A4_STANDARD_FREQUENCY });
+  window.location.reload();
 });
 
 // Frequency controls
