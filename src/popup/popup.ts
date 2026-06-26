@@ -107,8 +107,6 @@ function getStoredTheme(result: { theme?: unknown }): ThemeChoice {
     : "system";
 }
 
-const themeOrder: ThemeChoice[] = ["light", "system", "dark"];
-
 const themeManager = {
   current: "system" as ThemeChoice,
 
@@ -117,15 +115,6 @@ const themeManager = {
     const effective = resolveEffectiveTheme(choice);
     document.documentElement.setAttribute("data-theme", effective);
 
-    // Move segmented slider to the matching segment
-    const idx = themeOrder.indexOf(choice);
-    const slider = elements.themeSegment?.querySelector(
-      ".segment-slider"
-    ) as HTMLElement | null;
-    if (slider && idx >= 0) {
-      slider.style.transform = `translateX(${idx * 100}%)`;
-    }
-    // Mark the matching segment button as active
     elements.themeSegment
       ?.querySelectorAll(".segment-btn")
       .forEach((btn) => {

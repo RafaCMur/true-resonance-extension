@@ -735,22 +735,7 @@ footer {
   height: 32px;
 }
 
-.segment-slider {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: calc((100% - 6px) / 3);
-  height: calc(100% - 6px);
-  background: var(--card-bg);
-  border-radius: 9999px;
-  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(99, 102, 241, 0.15);
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-}
-
 .segment-btn {
-  position: relative;
-  z-index: 1;
   flex: 1;
   display: flex;
   align-items: center;
@@ -761,7 +746,7 @@ footer {
   cursor: pointer;
   color: var(--text-secondary);
   border-radius: 9999px;
-  transition: color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .segment-btn img {
@@ -769,16 +754,18 @@ footer {
   transition: opacity 0.2s ease;
 }
 
+.segment-btn:hover:not(.active) img {
+  opacity: 0.9;
+}
+
 .segment-btn.active {
+  background: var(--card-bg);
   color: var(--text-color);
+  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(99, 102, 241, 0.15);
 }
 
 .segment-btn.active img {
   opacity: 1;
-}
-
-.segment-btn:hover:not(.active) img {
-  opacity: 0.9;
 }
 
 /* ======================== BUTTONS: DANGER + COMPACT ======================== */
