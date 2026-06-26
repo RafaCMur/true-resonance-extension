@@ -36,14 +36,28 @@ chrome.storage.onChanged.addListener(({ state }) => {
 
 window.addEventListener("message", (event) => {
   if (event.source !== window) return;
+  if (window.self !== window.top) return;
 
   const data = event.data as
-    | { source?: string; type?: string }
+    | { source?: string; type?: string; reason?: string; host?: string }
     | undefined;
   if (!data || data.source !== SOURCE_INJECTED) return;
 
   if (data.type === "NEEDS_TIER2") {
-    console.warn("True Resonance: Tier 2 not available in this version");
+    chrome.runtime.sendMessage({
+      action: "startTabCapture",
+      reason: data.reason,
+      host: data.host,
+    });
+  }
+});
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message?.action === "stopTabCapture") {
+    window.postMessage(
+      { source: SOURCE_CONTENT, type: "STOP_TIER2" },
+      "*",
+    );
   }
 });
 

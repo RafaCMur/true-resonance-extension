@@ -1,4 +1,4 @@
-import { A4_STANDARD_FREQUENCY } from "../shared/constants";
+import { A4_STANDARD_FREQUENCY, C5_STANDARD_FREQUENCY } from "../shared/constants";
 import { GlobalState } from "../shared/types";
 
 const DEFAULT_STATE: GlobalState = {
@@ -9,70 +9,171 @@ const DEFAULT_STATE: GlobalState = {
 
 let state: GlobalState = { ...DEFAULT_STATE };
 
-// Load any previously persisted values so they survive service-worker restarts
 let _initialized = false;
 const _queue: Array<{ patch: Partial<GlobalState> }> = [];
 
-function updateBadge(state: GlobalState): void {
-  if (state.enabled && state.frequency !== A4_STANDARD_FREQUENCY) {
-    chrome.action.setBadgeText({ text: String(state.frequency) });
+let _capturedTabId: number | null = null;
+
+function updateBadge(s: GlobalState): void {
+  if (s.enabled && s.frequency !== A4_STANDARD_FREQUENCY) {
+    chrome.action.setBadgeText({ text: String(s.frequency) });
     chrome.action.setBadgeBackgroundColor({ color: "#c4b5fd" });
   } else {
     chrome.action.setBadgeText({ text: "" });
   }
 }
 
-// Initialize state and badge
+function computePitchRatio(s: GlobalState): number {
+  const refFreq =
+    s.frequency === 528 ? C5_STANDARD_FREQUENCY : A4_STANDARD_FREQUENCY;
+  return s.frequency / refFreq;
+}
+
 function initializeExtension() {
   chrome.storage.local.get("state", (res) => {
     if (res.state) {
       state = res.state;
     } else {
-      // No previous state: set default state
       state = { ...DEFAULT_STATE };
       persistState();
     }
     _initialized = true;
     updateBadge(state);
-    // flush any queued patches
     _queue.forEach(({ patch }) => setState(patch));
     _queue.length = 0;
   });
 }
 
-// Initialize on startup
 initializeExtension();
 
-// Re-initialize when Chrome starts up
 chrome.runtime.onStartup.addListener(() => {
   initializeExtension();
 });
 
-// Initialize when extension is installed/updated
-chrome.runtime.onInstalled.addListener(() => {
-  initializeExtension();
-});
+async function ensureOffscreenDocument(): Promise<void> {
+  if (await chrome.offscreen.hasDocument()) return;
+  await chrome.offscreen.createDocument({
+    url: "offscreen.html",
+    reasons: ["USER_MEDIA"],
+    justification: "tabCapture audio pitch processing",
+  });
+}
 
-// Update badge when switching tabs (ensures badge is always visible)
-chrome.tabs.onActivated.addListener(() => {
-  if (_initialized) {
-    updateBadge(state);
+async function handleStartTabCapture(
+  tabId: number,
+  _reason?: string,
+  _host?: string,
+): Promise<void> {
+  if (_capturedTabId !== null && _capturedTabId !== tabId) {
+    await handleStopTabCapture();
+  }
+  if (_capturedTabId === tabId) return;
+
+  const streamId = await chrome.tabCapture.getMediaStreamId({
+    targetTabId: tabId,
+  });
+  await ensureOffscreenDocument();
+
+  const pitch = computePitchRatio(state);
+  chrome.runtime.sendMessage({
+    target: "offscreen",
+    action: "startCapture",
+    streamId,
+    pitch,
+    enabled: state.enabled,
+  });
+
+  _capturedTabId = tabId;
+}
+
+async function handleStopTabCapture(): Promise<void> {
+  if (_capturedTabId === null) return;
+  chrome.runtime.sendMessage({ target: "offscreen", action: "stopCapture" });
+  try {
+    await chrome.tabs.sendMessage(_capturedTabId, {
+      action: "stopTabCapture",
+    });
+  } catch {
+    // tab may already be gone or content script not loaded
+  }
+  _capturedTabId = null;
+}
+
+function handleSetTabCapturePitch(): void {
+  if (_capturedTabId === null) return;
+  const pitch = computePitchRatio(state);
+  chrome.runtime.sendMessage({
+    target: "offscreen",
+    action: "setPitch",
+    pitch,
+    enabled: state.enabled,
+  });
+}
+
+async function injectIntoExistingTabs(): Promise<void> {
+  const tabs = await chrome.tabs.query({});
+  for (const tab of tabs) {
+    if (tab.id === undefined) continue;
+    const url = tab.url ?? "";
+    if (
+      url.startsWith("chrome://") ||
+      url.startsWith("edge://") ||
+      url.startsWith("about:") ||
+      url.startsWith("chrome-extension://")
+    ) {
+      continue;
+    }
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id, allFrames: true },
+        files: ["injected.js"],
+        world: "MAIN",
+      });
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id, allFrames: true },
+        files: ["content_script.js"],
+      });
+    } catch {
+      // protected pages (Chrome Web Store, file://, etc.) — silently ignore
+    }
+  }
+}
+
+chrome.runtime.onInstalled.addListener((details) => {
+  initializeExtension();
+  if (details.reason === "install") {
+    void injectIntoExistingTabs();
   }
 });
 
-// Saves the current state to chrome local storage
+chrome.tabs.onActivated.addListener(() => {
+  if (_initialized) updateBadge(state);
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+  if (_capturedTabId === tabId) {
+    _capturedTabId = null;
+    chrome.runtime.sendMessage({ target: "offscreen", action: "stopCapture" });
+  }
+});
+
 function persistState() {
   chrome.storage.local.set({ state });
 }
 
-// Updates the state and persists it
 function setState(patch: Partial<GlobalState>) {
   state = { ...state, ...patch };
   persistState();
   updateBadge(state);
+
+  if (!state.enabled && _capturedTabId !== null) {
+    void handleStopTabCapture();
+  } else if (_capturedTabId !== null) {
+    handleSetTabCapturePitch();
+  }
 }
 
-chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.action === "set" && typeof msg.patch === "object") {
     if (!_initialized) {
       _queue.push({ patch: msg.patch });
@@ -84,7 +185,17 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     return;
   }
 
-  // return true; // <-- only keep this if any of the "other handlers" use sendResponse later
+  if (msg.action === "startTabCapture" && sender.tab?.id !== undefined) {
+    void handleStartTabCapture(sender.tab.id, msg.reason, msg.host);
+    sendResponse({ ok: true });
+    return;
+  }
+
+  if (msg.action === "stopTabCapture") {
+    void handleStopTabCapture();
+    sendResponse({ ok: true });
+    return;
+  }
 });
 
-export {}; // This is to prevent the file from being a module and isolates the variables (errors from typescript)
+export {};

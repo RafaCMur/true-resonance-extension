@@ -22,6 +22,19 @@ interface InjectedConfig {
 let config: InjectedConfig | null = null;
 let baseUrl = "";
 
+const DRM_HOST_PATTERNS = [
+  { host: "open.spotify.com", label: "Spotify" },
+  { host: "netflix.com", label: "Netflix" },
+];
+
+function isDRMHost(hostname: string): boolean {
+  return DRM_HOST_PATTERNS.some(
+    (p) => hostname === p.host || hostname.endsWith("." + p.host),
+  );
+}
+
+let tier2Requested = false;
+
 const OriginalAudioContext = window.AudioContext;
 const OriginalWebkitAudioContext = (window as unknown as Record<string, unknown>).webkitAudioContext;
 
@@ -138,8 +151,33 @@ function setCrossOrigin(media: HTMLMediaElement): void {
 
 let activeCtx: CustomAudioContext | null = null;
 
+function reapplyConfig(media: HTMLMediaElement): void {
+  if (!config) return;
+  if (config.mode === "rate") {
+    if (media.playbackRate !== config.playbackRate) {
+      media.playbackRate = config.playbackRate;
+    }
+  } else if (activeCtx && activeCtx.state !== "closed") {
+    activeCtx.updatePitch(config.pitchRatio);
+  }
+}
+
 async function onMediaPlaying(media: HTMLMediaElement): Promise<void> {
   if (!config) return;
+
+  if (isDRMHost(window.location.hostname) && config.enabled && !tier2Requested) {
+    tier2Requested = true;
+    window.postMessage(
+      {
+        source: SOURCE_INJECTED,
+        type: "NEEDS_TIER2",
+        reason: "DRM_HOST",
+        host: window.location.hostname,
+      },
+      "*",
+    );
+    return;
+  }
 
   if (
     activeCtx &&
@@ -180,10 +218,13 @@ async function onMediaPlaying(media: HTMLMediaElement): Promise<void> {
       );
       media.preservesPitch = false;
       media.playbackRate = config.playbackRate;
-      window.postMessage(
-        { source: SOURCE_INJECTED, type: "NEEDS_TIER2", reason: "CORS" },
-        "*",
-      );
+      if (!tier2Requested) {
+        tier2Requested = true;
+        window.postMessage(
+          { source: SOURCE_INJECTED, type: "NEEDS_TIER2", reason: "CORS" },
+          "*",
+        );
+      }
       return;
     }
     throw e;
@@ -197,6 +238,10 @@ function registerMedia(media: HTMLMediaElement): void {
   setCrossOrigin(media);
   media.preservesPitch = true;
   media.addEventListener("playing", () => void onMediaPlaying(media));
+  media.addEventListener("play", () => void onMediaPlaying(media));
+  media.addEventListener("loadstart", () => reapplyConfig(media));
+  media.addEventListener("seeked", () => reapplyConfig(media));
+  media.addEventListener("ratechange", () => reapplyConfig(media));
 
   if (
     !media.paused &&
@@ -277,6 +322,7 @@ if (document.body) {
 
 function applyConfig(newConfig: InjectedConfig): void {
   config = newConfig;
+  tier2Requested = false;
 
   for (const ctx of contextRegistry) {
     if (ctx.state === "closed") {
