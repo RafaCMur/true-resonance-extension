@@ -323,34 +323,156 @@ body {
   letter-spacing: 0.025em;
 }
 
-.spotify-banner {
+/* ====================== ANNOUNCEMENT BANNER ====================== */
+.announcement-banner {
   margin: 0 0 calc(var(--spacing) * 0.9) 0;
-  padding: 0.55rem 1rem;
-  border-radius: 8888px;
+  padding: 0.5rem 0.6rem 0.5rem 0.95rem;
+  border-radius: 9999px;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
-  background: linear-gradient(135deg, #1ed760, #1db954);
-  border: none;
+  color: var(--text-color);
+  background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
   text-align: center;
   line-height: 1.35;
-  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  letter-spacing: 0.02em;
+  gap: 0.55rem;
+  letter-spacing: 0.015em;
   position: relative;
   overflow: hidden;
+  max-height: 60px;
+  box-shadow:
+    0 4px 14px rgba(99, 102, 241, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  animation: bannerSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    max-height 0.25s ease,
+    opacity 0.25s ease,
+    margin 0.25s ease,
+    padding 0.25s ease,
+    transform 0.25s ease;
 }
 
-.spotify-logo {
+.announcement-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(255, 255, 255, 0.6),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.announcement-banner > * {
+  position: relative;
+  z-index: 1;
+}
+
+.announcement-icon {
   flex-shrink: 0;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+  color: var(--primary-color);
+  filter: drop-shadow(0 1px 2px rgba(99, 102, 241, 0.25));
 }
 
-[data-theme="dark"] .spotify-banner {
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.7);
+.announcement-text {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.announcement-dismiss {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 9999px;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.announcement-dismiss:hover {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--text-color);
+  transform: scale(1.08);
+}
+
+.announcement-dismiss:active {
+  transform: scale(0.92);
+}
+
+.announcement-dismiss:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Dismissed state — collapses the banner out of layout */
+.announcement-banner.is-dismissed {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+
+/* Dark theme variant — translucent lilac glow on dark surface */
+[data-theme="dark"] .announcement-banner {
+  background: linear-gradient(
+    135deg,
+    rgba(129, 140, 248, 0.2) 0%,
+    rgba(196, 181, 253, 0.1) 100%
+  );
+  border-color: rgba(129, 140, 248, 0.3);
+  color: var(--text-color);
+  box-shadow:
+    0 4px 18px rgba(99, 102, 241, 0.15),
+    inset 0 1px 0 rgba(167, 139, 250, 0.08);
+}
+
+[data-theme="dark"] .announcement-banner::before {
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(167, 139, 250, 0.12),
+    transparent 65%
+  );
+}
+
+[data-theme="dark"] .announcement-icon {
+  color: var(--primary-light);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+[data-theme="dark"] .announcement-dismiss:hover {
+  background: rgba(167, 139, 250, 0.18);
+  color: var(--text-color);
+}
+
+@keyframes bannerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 60px;
+  }
 }
 
 .logo {

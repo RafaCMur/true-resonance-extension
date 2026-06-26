@@ -34,12 +34,15 @@
         </div>
       </div>
 
-      <div class="spotify-banner" data-i18n="spotifyBanner">
+      <div
+        class="announcement-banner"
+        data-announcement-id="spotify-launch"
+      >
         <svg
-          class="spotify-logo"
+          class="announcement-icon"
           viewBox="0 0 24 24"
-          width="14"
-          height="14"
+          width="16"
+          height="16"
           aria-hidden="true"
         >
           <path
@@ -47,7 +50,30 @@
             d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12C24 5.4 18.66 0 12 0zm5.521 17.34c-.24.371-.74.49-1.111.241-3.04-1.86-6.871-2.279-11.391-1.241-.451.12-.901-.181-1.021-.631-.12-.451.181-.901.631-1.021 4.92-1.121 9.131-.661 12.501 1.401.371.241.491.741.241 1.121l.15.13zm1.471-3.27c-.301.46-.921.6-1.381.301-3.481-2.141-8.781-2.761-12.891-1.511-.531.16-1.091-.13-1.251-.661-.16-.531.13-1.091.661-1.251 4.691-1.411 10.501-.741 14.481 1.711.461.301.601.921.301 1.381l.08.03zm.131-3.47c-4.171-2.481-11.041-2.711-15.021-1.501-.631.19-1.291-.161-1.481-.791-.19-.631.161-1.291.791-1.481 4.561-1.371 12.081-1.101 16.881 1.781.601.36.791 1.131.431 1.731-.36.601-1.131.791-1.731.431l.13-.17z"
           />
         </svg>
-        <span class="spotify-banner-text">Spotify support is here</span>
+        <span class="announcement-text" data-i18n="spotifyBanner"
+          >Spotify support is here</span
+        >
+        <button
+          type="button"
+          class="announcement-dismiss"
+          data-i18n-aria-label="dismissAnnouncement"
+          aria-label="Dismiss"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            width="12"
+            height="12"
+            aria-hidden="true"
+          >
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              d="M3 3 L13 13 M13 3 L3 13"
+            />
+          </svg>
+        </button>
       </div>
 
       <div class="main-view" id="mainView">

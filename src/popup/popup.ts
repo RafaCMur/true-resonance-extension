@@ -38,7 +38,24 @@ const elements = {
   // Presets
   preset432: document.getElementById("pitch-432-btn") as HTMLButtonElement,
   preset528: document.getElementById("pitch-528-btn") as HTMLButtonElement,
+
+  // Announcement banner
+  announcementBanner: document.querySelector(
+    ".announcement-banner"
+  ) as HTMLElement,
 };
+
+const ANNOUNCEMENT_ID =
+  document
+    .querySelector(".announcement-banner")
+    ?.getAttribute("data-announcement-id") ?? null;
+
+function applyAnnouncementVisibility(dismissedId: string | null | undefined) {
+  if (!elements.announcementBanner || !ANNOUNCEMENT_ID) return;
+  const dismissed = dismissedId === ANNOUNCEMENT_ID;
+  elements.announcementBanner.classList.toggle("is-dismissed", dismissed);
+  elements.announcementBanner.style.display = dismissed ? "none" : "";
+}
 
 // ======================== STATE ========================
 let currentFrequency: Frequency = A4_STANDARD_FREQUENCY;
@@ -72,6 +89,10 @@ function updateLanguageUI() {
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     const key = element.getAttribute("data-i18n");
     if (key) element.textContent = i18n.t(key);
+  });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    const key = element.getAttribute("data-i18n-aria-label");
+    if (key) element.setAttribute("aria-label", i18n.t(key));
   });
 }
 
@@ -208,6 +229,11 @@ chrome.storage.onChanged.addListener(({ state, theme, language }) => {
   }
 });
 
+// Announcement banner: read persisted dismiss on load
+chrome.storage.local.get("dismissedAnnouncement", ({ dismissedAnnouncement }) => {
+  applyAnnouncementVisibility(dismissedAnnouncement);
+});
+
 // ======================== EVENT LISTENERS ========================
 // Power toggle
 elements.powerToggle?.addEventListener("click", () => {
@@ -222,6 +248,21 @@ elements.powerToggle?.addEventListener("click", () => {
 // Settings: open / back navigation
 elements.settingsBtn?.addEventListener("click", () => switchView("settings"));
 elements.backFromSettings?.addEventListener("click", () => switchView("main"));
+
+// Announcement banner: dismiss persists across browser restarts
+const announcementDismissBtn = elements.announcementBanner?.querySelector(
+  ".announcement-dismiss"
+) as HTMLButtonElement | null;
+announcementDismissBtn?.addEventListener("click", () => {
+  if (!elements.announcementBanner) return;
+  elements.announcementBanner.classList.add("is-dismissed");
+  if (ANNOUNCEMENT_ID) {
+    chrome.storage.local.set({ dismissedAnnouncement: ANNOUNCEMENT_ID });
+  }
+  setTimeout(() => {
+    elements.announcementBanner.style.display = "none";
+  }, 260);
+});
 
 // Settings: theme segmented control
 elements.themeSegment?.querySelectorAll(".segment-btn").forEach((btn) => {
@@ -279,6 +320,7 @@ elements.resetAllBtn?.addEventListener("click", () => {
   chrome.storage.local.set({ state: { enabled: false, mode: "pitch", frequency: A4_STANDARD_FREQUENCY } });
   chrome.storage.local.remove("theme");
   chrome.storage.local.remove("language");
+  chrome.storage.local.remove("dismissedAnnouncement");
   localStorage.removeItem("theme");
   sendPatch({ enabled: false, mode: "pitch", frequency: A4_STANDARD_FREQUENCY });
   window.location.reload();

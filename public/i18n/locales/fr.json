@@ -20,5 +20,6 @@
   "openAbout": "Ouvrir",
   "resetLabel": "Réinitialiser tout",
   "resetDesc": "Restaurer les valeurs par défaut",
-  "reset": "Réinitialiser"
+  "reset": "Réinitialiser",
+  "dismissAnnouncement": "Ignorer"
 }

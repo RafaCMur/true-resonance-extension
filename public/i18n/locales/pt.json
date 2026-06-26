@@ -20,5 +20,6 @@
   "openAbout": "Abrir",
   "resetLabel": "Redefinir tudo",
   "resetDesc": "Restaurar padrões",
-  "reset": "Redefinir"
+  "reset": "Redefinir",
+  "dismissAnnouncement": "Dispensar"
 }

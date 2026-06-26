@@ -20,5 +20,6 @@
   "openAbout": "Öffnen",
   "resetLabel": "Alles zurücksetzen",
   "resetDesc": "Standardwerte wiederherstellen",
-  "reset": "Zurücksetzen"
+  "reset": "Zurücksetzen",
+  "dismissAnnouncement": "Schließen"
 }
