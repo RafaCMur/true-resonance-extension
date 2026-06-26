@@ -323,7 +323,7 @@ body {
   letter-spacing: 0.025em;
 }
 
-.upcoming-banner {
+.spotify-banner {
   margin: 0 0 calc(var(--spacing) * 0.9) 0;
   padding: 0.55rem 1rem;
   border-radius: 8888px;
@@ -335,20 +335,21 @@ body {
   text-align: center;
   line-height: 1.35;
   box-shadow: var(--shadow-sm);
-  display: block;
-  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
 }
 
-.upcoming-banner-cta {
-  display: block;
-  margin-top: 0.1rem;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+.spotify-logo {
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
 }
 
-[data-theme="dark"] .upcoming-banner {
+[data-theme="dark"] .spotify-banner {
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.7);
 }
 
@@ -645,4 +646,169 @@ footer {
   color: var(--text-secondary);
   margin: 0.5rem 0 0 0;
   opacity: 0.8;
+}
+
+/* ======================== SETTINGS VIEW ======================== */
+.main-view,
+.settings-view {
+  transition: opacity 0.2s ease;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.settings-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  letter-spacing: 0.01em;
+}
+
+.settings-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 0.25rem 1rem;
+  margin-bottom: 0.75rem;
+  transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  min-height: 52px;
+}
+
+.settings-row-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-row-label > span:first-child {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.settings-row-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+
+.settings-divider {
+  border-bottom: 1px solid var(--border-color);
+  opacity: 0.6;
+}
+
+/* ======================== SEGMENTED CONTROL ======================== */
+.segment-control {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  background: var(--background);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  padding: 3px;
+  min-width: 132px;
+  height: 32px;
+}
+
+.segment-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / 3);
+  height: calc(100% - 6px);
+  background: var(--card-bg);
+  border-radius: 9999px;
+  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(99, 102, 241, 0.15);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.segment-btn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-radius: 9999px;
+  transition: color 0.2s ease;
+}
+
+.segment-btn img {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.segment-btn.active {
+  color: var(--text-color);
+}
+
+.segment-btn.active img {
+  opacity: 1;
+}
+
+.segment-btn:hover:not(.active) img {
+  opacity: 0.9;
+}
+
+/* ======================== BUTTONS: DANGER + COMPACT ======================== */
+.btn.compact {
+  padding: 0.4rem 0.85rem;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: 1.5px solid #ef4444;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  transform: scale(1.02);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .btn-danger {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+[data-theme="dark"] .btn-danger:hover {
+  background-color: #991b1b;
+  border-color: #991b1b;
 }
