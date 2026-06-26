@@ -44,11 +44,13 @@ window.addEventListener("message", (event) => {
   if (!data || data.source !== SOURCE_INJECTED) return;
 
   if (data.type === "NEEDS_TIER2") {
-    chrome.runtime.sendMessage({
-      action: "startTabCapture",
-      reason: data.reason,
-      host: data.host,
-    });
+    chrome.runtime
+      .sendMessage({
+        action: "startTabCapture",
+        reason: data.reason,
+        host: data.host,
+      })
+      .catch(() => {});
   }
 });
 

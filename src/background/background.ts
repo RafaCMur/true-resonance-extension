@@ -69,26 +69,44 @@ async function handleStartTabCapture(
   }
   if (_capturedTabId === tabId) return;
 
-  const streamId = await chrome.tabCapture.getMediaStreamId({
-    targetTabId: tabId,
-  });
-  await ensureOffscreenDocument();
+  let streamId: string;
+  try {
+    streamId = await chrome.tabCapture.getMediaStreamId({
+      targetTabId: tabId,
+    });
+  } catch {
+    return;
+  }
+  if (!streamId) return;
+
+  try {
+    await ensureOffscreenDocument();
+  } catch {
+    return;
+  }
 
   const pitch = computePitchRatio(state);
-  chrome.runtime.sendMessage({
-    target: "offscreen",
-    action: "startCapture",
-    streamId,
-    pitch,
-    enabled: state.enabled,
-  });
+  try {
+    const response = await chrome.runtime.sendMessage({
+      target: "offscreen",
+      action: "startCapture",
+      streamId,
+      pitch,
+      enabled: state.enabled,
+    });
+    if (!response || response.success !== true) return;
+  } catch {
+    return;
+  }
 
   _capturedTabId = tabId;
 }
 
 async function handleStopTabCapture(): Promise<void> {
   if (_capturedTabId === null) return;
-  chrome.runtime.sendMessage({ target: "offscreen", action: "stopCapture" });
+  chrome.runtime
+    .sendMessage({ target: "offscreen", action: "stopCapture" })
+    .catch(() => {});
   try {
     await chrome.tabs.sendMessage(_capturedTabId, {
       action: "stopTabCapture",
@@ -153,7 +171,9 @@ chrome.tabs.onActivated.addListener(() => {
 chrome.tabs.onRemoved.addListener((tabId) => {
   if (_capturedTabId === tabId) {
     _capturedTabId = null;
-    chrome.runtime.sendMessage({ target: "offscreen", action: "stopCapture" });
+    chrome.runtime
+      .sendMessage({ target: "offscreen", action: "stopCapture" })
+      .catch(() => {});
   }
 });
 

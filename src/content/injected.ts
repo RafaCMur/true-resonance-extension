@@ -239,7 +239,7 @@ function registerMedia(media: HTMLMediaElement): void {
   media.preservesPitch = true;
   media.addEventListener("playing", () => void onMediaPlaying(media));
   media.addEventListener("play", () => void onMediaPlaying(media));
-  media.addEventListener("loadstart", () => reapplyConfig(media));
+  media.addEventListener("loadstart", () => void onMediaPlaying(media));
   media.addEventListener("seeked", () => reapplyConfig(media));
   media.addEventListener("ratechange", () => reapplyConfig(media));
 
@@ -362,5 +362,9 @@ window.addEventListener("message", (event) => {
   if (data.type === "UPDATE_CONFIG" && data.config) {
     baseUrl = data.baseUrl || "";
     applyConfig(data.config);
+  }
+
+  if (data.type === "STOP_TIER2") {
+    tier2Requested = false;
   }
 });
