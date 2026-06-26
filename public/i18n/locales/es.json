@@ -9,5 +9,6 @@
   "donate": "Donar",
   "questions": "¿Preguntas?",
   "tooltipPitchOnly": "Cambia solo el tono manteniendo la velocidad original",
-  "tooltipSpeedPitch": "Cambia tanto el tono como la velocidad de reproducción"
+  "tooltipSpeedPitch": "Cambia tanto el tono como la velocidad de reproducción",
+  "upcomingBanner": "Próximamente compatible con Spotify"
 }
