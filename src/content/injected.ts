@@ -32,6 +32,7 @@ class CustomAudioContext extends OriginalAudioContext {
   private _virtualDest: GainNode;
   private _workletNode: AudioWorkletNode | null = null;
   private _algorithm: Algorithm | null = null;
+  private _wiring = false;
 
   constructor(contextOptions?: AudioContextOptions) {
     super(contextOptions);
@@ -47,7 +48,8 @@ class CustomAudioContext extends OriginalAudioContext {
   }
 
   async wireWorklet(): Promise<void> {
-    if (this._workletNode || !baseUrl) return;
+    if (this._workletNode || this._wiring || !baseUrl) return;
+    this._wiring = true;
     try {
       const { node, algorithm } = await loadWorklet(this, baseUrl);
       this._workletNode = node;
@@ -60,6 +62,8 @@ class CustomAudioContext extends OriginalAudioContext {
       }
     } catch (e) {
       console.warn("True Resonance: failed to load worklet", e);
+    } finally {
+      this._wiring = false;
     }
   }
 
@@ -105,7 +109,7 @@ function setCrossOrigin(media: HTMLMediaElement): void {
     }
   });
 
-  const onAbort = (e: Event): void => {
+  const onError = (e: Event): void => {
     if (!crossOriginFailed) return;
     let next: string | null;
     switch (media.crossOrigin) {
@@ -123,7 +127,7 @@ function setCrossOrigin(media: HTMLMediaElement): void {
     media.load();
   };
 
-  media.addEventListener("abort", onAbort);
+  media.addEventListener("error", onError);
 
   const onDone = (): void => {
     crossOriginFailed = false;
@@ -298,6 +302,7 @@ function applyConfig(newConfig: InjectedConfig): void {
     } else {
       media.preservesPitch = true;
       media.playbackRate = newConfig.playbackRate;
+      if (!media.paused) void onMediaPlaying(media);
     }
   }
 }

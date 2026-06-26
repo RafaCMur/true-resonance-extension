@@ -17,7 +17,7 @@ function sendConfig(state: GlobalState): void {
         enabled: state.enabled,
         mode: state.mode,
         pitchRatio,
-        playbackRate: pitchRatio,
+        playbackRate: state.mode === "rate" ? pitchRatio : 1,
         semitones: 12 * Math.log2(pitchRatio),
       },
       baseUrl: chrome.runtime.getURL(""),
