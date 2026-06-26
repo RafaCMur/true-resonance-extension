@@ -9,7 +9,9 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg.target !== "offscreen") return false;
 
   if (msg.action === "startCapture") {
-    startCapture(msg.streamId, msg.pitch, msg.enabled !== false).then(sendResponse);
+    startCapture(msg.streamId, msg.pitch, msg.enabled !== false).then(
+      sendResponse,
+    );
     return true;
   }
   if (msg.action === "setPitch") {
@@ -45,7 +47,7 @@ async function startCapture(
           chromeMediaSource: "tab",
           chromeMediaSourceId: streamId,
         },
-      },
+      } as unknown as MediaTrackConstraints,
       video: false,
     });
 

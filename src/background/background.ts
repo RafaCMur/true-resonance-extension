@@ -65,8 +65,14 @@ async function handleStartTabCapture(
 
   let streamId: string;
   try {
-    streamId = await chrome.tabCapture.getMediaStreamId({
-      targetTabId: tabId,
+    streamId = await new Promise<string>((resolve, reject) => {
+      chrome.tabCapture.getMediaStreamId({ targetTabId: tabId }, (id) => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+        } else {
+          resolve(id);
+        }
+      });
     });
   } catch {
     return;
