@@ -37,3 +37,6 @@ Thumbs.db
 
 # Debug files
 debug.log
+
+# Local docs
+/docs/local/
