@@ -1,4 +1,4 @@
-import { A4_STANDARD_FREQUENCY, C5_STANDARD_FREQUENCY } from "../shared/constants";
+import { A4_STANDARD_FREQUENCY, computePitchRatio } from "../shared/constants";
 import { GlobalState } from "../shared/types";
 
 const DEFAULT_STATE: GlobalState = {
@@ -21,12 +21,6 @@ function updateBadge(s: GlobalState): void {
   } else {
     chrome.action.setBadgeText({ text: "" });
   }
-}
-
-function computePitchRatio(s: GlobalState): number {
-  const refFreq =
-    s.frequency === 528 ? C5_STANDARD_FREQUENCY : A4_STANDARD_FREQUENCY;
-  return s.frequency / refFreq;
 }
 
 function initializeExtension() {

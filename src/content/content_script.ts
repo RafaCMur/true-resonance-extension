@@ -1,13 +1,11 @@
-import { A4_STANDARD_FREQUENCY, C5_STANDARD_FREQUENCY } from "../shared/constants";
+import { computePitchRatio } from "../shared/constants";
 import { GlobalState } from "../shared/types";
 
 const SOURCE_CONTENT = "TR_CONTENT";
 const SOURCE_INJECTED = "TR_INJECTED";
 
 function sendConfig(state: GlobalState): void {
-  const refFreq =
-    state.frequency === 528 ? C5_STANDARD_FREQUENCY : A4_STANDARD_FREQUENCY;
-  const pitchRatio = state.frequency / refFreq;
+  const pitchRatio = computePitchRatio(state);
 
   window.postMessage(
     {

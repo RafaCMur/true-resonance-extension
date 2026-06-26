@@ -1,7 +1,7 @@
 const IDEMPOTENCY_KEY = "__trueResonance_injected";
 
 if ((window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
-  throw new Error("True Resonance: already injected");
+  return;
 }
 Object.defineProperty(window, IDEMPOTENCY_KEY, { value: true, writable: false });
 
