@@ -67,39 +67,85 @@ function updateLanguageUI() {
 }
 
 // ======================== THEME MANAGEMENT ========================
+type ThemeChoice = "light" | "dark" | "system";
+
+function getSystemTheme(): "light" | "dark" {
+  return window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function resolveEffectiveTheme(choice: ThemeChoice): "light" | "dark" {
+  return choice === "system" ? getSystemTheme() : choice;
+}
+
+function getStoredTheme(result: { theme?: unknown }): ThemeChoice {
+  const t = result.theme;
+  return t === "light" || t === "dark" || t === "system"
+    ? t
+    : "system";
+}
+
+const themeIconMap: Record<ThemeChoice, string> = {
+  light: "images/theme-light.svg",
+  dark: "images/theme-dark.svg",
+  system: "images/theme-auto.svg",
+};
+
 const themeManager = {
-  updateButton(isDark: boolean) {
-    elements.themeToggle?.classList.toggle("active", isDark);
+  current: "system" as ThemeChoice,
+
+  apply(choice: ThemeChoice) {
+    this.current = choice;
+    const effective = resolveEffectiveTheme(choice);
+    document.documentElement.setAttribute("data-theme", effective);
+
     const icon = elements.themeToggle?.querySelector("img");
     if (icon) {
-      icon.src = isDark ? "images/theme-dark.svg" : "images/theme-light.svg";
+      icon.src = themeIconMap[choice];
+    }
+    elements.themeToggle?.classList.toggle("active", choice === "dark");
+    if (elements.themeToggle) {
+      const capitalized = choice.charAt(0).toUpperCase() + choice.slice(1);
+      elements.themeToggle.title =
+        choice === "system" ? "Theme: System (auto)" : `Theme: ${capitalized}`;
     }
   },
 
   init() {
-    // Initialize button state immediately from DOM (theme-preload.js already applied it)
-    const currentTheme =
-      document.documentElement.getAttribute("data-theme") || "light";
-    this.updateButton(currentTheme === "dark");
-
-    // Sync with storage asynchronously
+    // Read DOM first (preload may have already applied system theme).
     chrome.storage.local.get(["theme"], (result) => {
-      const theme = result.theme || "light";
-      // Theme already applied by theme-preload.js, just sync localStorage and update button
-      localStorage.setItem("theme", theme);
-      this.updateButton(theme === "dark");
+      const stored = getStoredTheme(result);
+      this.apply(stored);
+
+      if (stored === "light" || stored === "dark") {
+        // Mirror explicit choice to localStorage so preload renders it on next open.
+        localStorage.setItem("theme", stored);
+      } else {
+        // System: keep localStorage clean so preload derives from OS each load.
+        localStorage.removeItem("theme");
+      }
     });
   },
 
-  toggle() {
-    const isDark =
-      document.documentElement.getAttribute("data-theme") === "dark";
-    const newTheme = isDark ? "light" : "dark";
+  cycle() {
+    const next: ThemeChoice =
+      this.current === "system"
+        ? "light"
+        : this.current === "light"
+        ? "dark"
+        : "system";
 
-    document.documentElement.setAttribute("data-theme", newTheme);
-    chrome.storage.local.set({ theme: newTheme });
-    localStorage.setItem("theme", newTheme);
-    this.updateButton(newTheme === "dark");
+    this.apply(next);
+
+    if (next === "system") {
+      chrome.storage.local.set({ theme: "system" });
+      localStorage.removeItem("theme");
+    } else {
+      chrome.storage.local.set({ theme: next });
+      localStorage.setItem("theme", next);
+    }
   },
 };
 
@@ -147,9 +193,13 @@ chrome.storage.onChanged.addListener(({ state, theme, language }) => {
   if (state?.newValue) updateUI(state.newValue as GlobalState);
 
   if (theme?.newValue) {
-    document.documentElement.setAttribute("data-theme", theme.newValue);
-    localStorage.setItem("theme", theme.newValue);
-    themeManager.updateButton(theme.newValue === "dark");
+    const next = getStoredTheme({ theme: theme.newValue });
+    themeManager.apply(next);
+    if (next === "light" || next === "dark") {
+      localStorage.setItem("theme", next);
+    } else {
+      localStorage.removeItem("theme");
+    }
   }
 
   if (language?.newValue) {
@@ -169,7 +219,7 @@ elements.powerToggle?.addEventListener("click", () => {
 });
 
 // Theme toggle
-elements.themeToggle?.addEventListener("click", () => themeManager.toggle());
+elements.themeToggle?.addEventListener("click", () => themeManager.cycle());
 
 // Language dropdown
 if (elements.languageBtn && elements.languageMenu) {

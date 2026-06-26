@@ -9,5 +9,6 @@
   "donate": "Faire un don",
   "questions": "Questions ?",
   "tooltipPitchOnly": "Change seulement la hauteur en maintenant la vitesse originale",
-  "tooltipSpeedPitch": "Change à la fois la hauteur et la vitesse de lecture"
+  "tooltipSpeedPitch": "Change à la fois la hauteur et la vitesse de lecture",
+  "upcomingBanner": "Prise en charge de Spotify bientôt disponible"
 }

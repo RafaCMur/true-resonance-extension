@@ -4,6 +4,7 @@ node_modules/
 # Build output
 dist/
 build/
+releases/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -37,3 +38,6 @@ Thumbs.db
 
 # Debug files
 debug.log
+
+# Local docs
+/docs/local/

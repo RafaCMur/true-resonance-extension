@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## [2.1.6] - 2026-06-26
+
+### Added
+
+- Theme now follows the system preference (`prefers-color-scheme`) by default. The toggle is now a 3-state cycle: **Light → Dark → System (auto)**. The "System" option returns the popup to following the OS theme and continues tracking it.
+
+### Fixed
+
+- Theme is no longer baked into `localStorage`/`chrome.storage` when derived from the system preference — the popup now keeps tracking OS theme changes until the user explicitly toggles.
+- Removed dead `about.html` script that referenced non-existent DOM IDs (`status`, `frequency`, `mode`, `resetBtn`) and threw `TypeError` on load.
+
+## [2.1.5] - 2026-06-26
+
+### Added
+
+- TypeScript `@types/chrome` now included via `tsconfig.json` for proper `chrome.*` global typings
+
+### Changed
+
+- Announcement banner: replaced Android pre-release message with "Spotify support is coming soon" (Spotify green styling, translated across all 6 languages)
+- Badge color for 432/528 Hz tuning: now lilac (`#c4b5fd`) instead of green
+- TypeScript `moduleResolution` migrated from `node` to `bundler` (resolves deprecation warning)
+
+### Fixed
+
+- Pitch mode now correctly sends `playbackRate: 1` to the page instead of `pitchRatio`, preventing double pitch shifting by both the worklet and the browser
+- Pitch mode now re-applies tuning to media that's already playing when the extension is enabled or config changes
+- CORS media ladder now listens for the `error` event (instead of `abort`), which never fires reliably on `<audio>`/`<video>` elements
+- Race condition when concurrent `wireWorklet()` calls happened before the worklet finished loading (`_wiring` guard prevents duplicate AudioWorklet loads)
+
 ## [2.1.4] - 2025-10-16
 
 ### Added

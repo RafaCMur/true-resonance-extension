@@ -9,5 +9,6 @@
   "donate": "Donate",
   "questions": "Questions?",
   "tooltipPitchOnly": "Changes only pitch while maintaining original speed",
-  "tooltipSpeedPitch": "Changes both pitch and playback speed"
+  "tooltipSpeedPitch": "Changes both pitch and playback speed",
+  "upcomingBanner": "Spotify support is coming soon"
 }

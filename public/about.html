@@ -61,39 +61,5 @@
         </section>
       </main>
     </div>
-
-    <script>
-      // Load current settings
-      chrome.storage.local.get(["enabled", "frequency", "mode"], (result) => {
-        document.getElementById("status").textContent = result.enabled
-          ? "Active"
-          : "Inactive";
-        document.getElementById("frequency").textContent =
-          (result.frequency || 440) + " Hz";
-        document.getElementById("mode").textContent =
-          result.mode === "rate" ? "Speed & Pitch" : "Pitch Only";
-      });
-
-      // Reset button
-      document.getElementById("resetBtn").addEventListener("click", () => {
-        if (confirm("Reset all settings to default values?")) {
-          chrome.storage.local.set({
-            enabled: false,
-            mode: "pitch",
-            frequency: 440,
-            language: "en",
-            theme: "light",
-          });
-
-          chrome.runtime.sendMessage({
-            action: "set",
-            patch: { enabled: false, mode: "pitch", frequency: 440 },
-          });
-
-          alert("Settings reset successfully!");
-          location.reload();
-        }
-      });
-    </script>
   </body>
 </html>
