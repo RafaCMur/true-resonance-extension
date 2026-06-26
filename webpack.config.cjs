@@ -8,6 +8,7 @@ module.exports = {
     background: "./src/background/background.ts",
     content_script: "./src/content/content_script.ts",
     injected: "./src/content/injected.ts",
+    offscreen: "./src/offscreen/offscreen.ts",
     popup: "./src/popup/popup.ts",
   },
   output: {

@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## [2.1.7] - 2026-06-26
+
+### Added
+
+- **Hybrid audio architecture**: DRM-protected sites (Spotify, Netflix) now play in healing frequencies via `chrome.tabCapture` + offscreen document with SoundTouch worklet. Non-DRM sites continue using the lightweight Tier 1 (AudioContext + media element source) path.
+- **DRM host allowlist**: Spotify (`open.spotify.com`) and Netflix (`netflix.com`) automatically route to Tier 2. Subdomain matching included (`*.open.spotify.com`, `*.netflix.com`).
+- **Multi-tab handoff**: only one offscreen capture active at a time. If a second DRM tab enables tuning, the first is gracefully stopped and the new one starts.
+- **Retro-injection on install**: when the extension is first installed, `chrome.scripting.executeScript` injects both `injected.js` (MAIN world) and `content_script.js` (ISOLATED world) into all existing tabs, so they don't need a reload to start working.
+- **`sidePanel` permission**: popup can now also be opened as a Chrome side panel via `chrome.sidePanel`.
+- **`minimum_chrome_version` raised to 116**: Chrome < 116 cannot consume a tabCapture `streamId` in an offscreen document without `consumerTabId`; 116+ supports the clean API.
+
+### Changed
+
+- **Robustness hardening**: all cross-context `chrome.runtime.sendMessage` calls now have `.catch(() => {})` guards to prevent unhandled promise rejections if the receiver is gone.
+- **Idempotency guard for injected script**: uses silent `if`-wrap (no exception) to prevent double-injection without leaking errors to the page console.
+- **`computePitchRatio` extracted to `src/shared/constants.ts`**: single source of truth used by both background script and content script (prevents drift).
+
+### Fixed
+
+- **Spotify detune on manual song change**: Spotify's gapless MSE buffer swap does not re-fire the `playing` event, and its player resets `playbackRate = 1` on track transition. Now handled by Tier 2 (tabCapture survives the swap at the document level) plus a `loadstart` listener for Tier 1.
+- **YouTube `ratechange` reset**: YouTube's player also resets `playbackRate` on certain transitions; now re-applied via `ratechange`/`seeked` listeners.
+- **Race condition on concurrent `handleStartTabCapture`**: serialized via `_capturing` mutex so two simultaneous DRM tab requests don't orphan an offscreen capture.
+- **`AudioContext.state === "interrupted"`** (macOS background): now handled alongside `"suspended"` when resuming.
+
 ## [2.1.6] - 2026-06-26
 
 ### Added

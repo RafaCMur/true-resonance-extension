@@ -1,13 +1,11 @@
-import { A4_STANDARD_FREQUENCY, C5_STANDARD_FREQUENCY } from "../shared/constants";
+import { computePitchRatio } from "../shared/constants";
 import { GlobalState } from "../shared/types";
 
 const SOURCE_CONTENT = "TR_CONTENT";
 const SOURCE_INJECTED = "TR_INJECTED";
 
 function sendConfig(state: GlobalState): void {
-  const refFreq =
-    state.frequency === 528 ? C5_STANDARD_FREQUENCY : A4_STANDARD_FREQUENCY;
-  const pitchRatio = state.frequency / refFreq;
+  const pitchRatio = computePitchRatio(state);
 
   window.postMessage(
     {
@@ -36,14 +34,30 @@ chrome.storage.onChanged.addListener(({ state }) => {
 
 window.addEventListener("message", (event) => {
   if (event.source !== window) return;
+  if (window.self !== window.top) return;
 
   const data = event.data as
-    | { source?: string; type?: string }
+    | { source?: string; type?: string; reason?: string; host?: string }
     | undefined;
   if (!data || data.source !== SOURCE_INJECTED) return;
 
   if (data.type === "NEEDS_TIER2") {
-    console.warn("True Resonance: Tier 2 not available in this version");
+    chrome.runtime
+      .sendMessage({
+        action: "startTabCapture",
+        reason: data.reason,
+        host: data.host,
+      })
+      .catch(() => {});
+  }
+});
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message?.action === "stopTabCapture") {
+    window.postMessage(
+      { source: SOURCE_CONTENT, type: "STOP_TIER2" },
+      "*",
+    );
   }
 });
 
