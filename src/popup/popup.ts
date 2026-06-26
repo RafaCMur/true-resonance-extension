@@ -84,10 +84,18 @@ const themeManager = {
 
     // Sync with storage asynchronously
     chrome.storage.local.get(["theme"], (result) => {
-      const theme = result.theme || "light";
-      // Theme already applied by theme-preload.js, just sync localStorage and update button
-      localStorage.setItem("theme", theme);
-      this.updateButton(theme === "dark");
+      const stored = result.theme as string | undefined;
+      if (stored === "dark" || stored === "light") {
+        // User has an explicit saved preference: mirror to localStorage and re-apply
+        localStorage.setItem("theme", stored);
+        if (document.documentElement.getAttribute("data-theme") !== stored) {
+          document.documentElement.setAttribute("data-theme", stored);
+        }
+        this.updateButton(stored === "dark");
+      }
+      // No stored preference: keep the system-derived theme applied by theme-preload.js.
+      // Do NOT write to localStorage/chrome.storage — that would bake the system
+      // preference in and stop tracking future OS theme changes.
     });
   },
 
