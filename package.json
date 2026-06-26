@@ -26,7 +26,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "webpack --config webpack.config.cjs",
-    "watch": "webpack --watch --config webpack.config.cjs"
+    "watch": "webpack --watch --config webpack.config.cjs",
+    "release": "node scripts/release.cjs"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.326",
