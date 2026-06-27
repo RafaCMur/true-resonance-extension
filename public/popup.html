@@ -19,19 +19,21 @@
 
       <!-- Top Control Bar -->
       <div class="top-control-bar">
-        <div class="control-group">
-          <button class="control-btn" id="powerToggle" title="Turn on/off">
-            <img src="images/power.svg" alt="Power" width="16" height="16" />
-          </button>
-          <button class="control-btn" id="settingsBtn" title="Settings">
-            <img
-              src="images/settings.svg"
-              alt="Settings"
-              width="16"
-              height="16"
-            />
-          </button>
+        <button class="control-btn" id="powerToggle" title="Turn on/off">
+          <img src="images/power.svg" alt="Power" width="16" height="16" />
+        </button>
+        <div class="status-info">
+          <span class="status-title">True Resonance</span>
+          <span class="status-subtitle" id="statusSubtitle">Inactive</span>
         </div>
+        <button class="control-btn" id="settingsBtn" title="Settings">
+          <img
+            src="images/settings.svg"
+            alt="Settings"
+            width="16"
+            height="16"
+          />
+        </button>
       </div>
 
       <div class="announcement-banner" data-announcement-id="spotify-launch">

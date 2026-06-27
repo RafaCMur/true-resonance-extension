@@ -43,6 +43,9 @@ const elements = {
   announcementBanner: document.querySelector(
     ".announcement-banner"
   ) as HTMLElement,
+
+  // Status info
+  statusSubtitle: document.getElementById("statusSubtitle") as HTMLElement,
 };
 
 const ANNOUNCEMENT_ID =
@@ -83,6 +86,27 @@ function updateUI(state: GlobalState) {
   currentFrequency = frequency;
   elements.preset432?.classList.toggle("active", frequency === 432);
   elements.preset528?.classList.toggle("active", frequency === 528);
+
+  // Update status
+  updateStatusUI(state);
+}
+
+function updateStatusUI(state: GlobalState): void {
+  const el = elements.statusSubtitle;
+  if (!el) return;
+
+  const { enabled, frequency } = state;
+
+  if (!enabled) {
+    el.textContent = "Inactive";
+    el.classList.remove("active");
+  } else if (frequency === 440) {
+    el.textContent = "Active";
+    el.classList.add("active");
+  } else {
+    el.textContent = `Active \u00B7 ${frequency} Hz`;
+    el.classList.add("active");
+  }
 }
 
 function updateLanguageUI() {
@@ -246,7 +270,10 @@ elements.powerToggle?.addEventListener("click", () => {
 });
 
 // Settings: open / back navigation
-elements.settingsBtn?.addEventListener("click", () => switchView("settings"));
+elements.settingsBtn?.addEventListener("click", () => {
+  const isOpen = !elements.settingsView?.classList.contains("hidden");
+  switchView(isOpen ? "main" : "settings");
+});
 elements.backFromSettings?.addEventListener("click", () => switchView("main"));
 
 // Announcement banner: dismiss persists across browser restarts
