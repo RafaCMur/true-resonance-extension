@@ -39,7 +39,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["soundtouch-worklet.js", "signalsmith-stretch.mjs"],
+      "resources": ["soundtouch-worklet.js"],
       "matches": ["<all_urls>"]
     }
   ],
