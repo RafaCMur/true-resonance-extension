@@ -187,7 +187,7 @@
       <!-- Settings view -->
       <div class="settings-view hidden" id="settingsView">
         <div class="settings-header">
-          <button class="control-btn" id="backFromSettings" title="Back">
+          <button class="settings-back-btn" id="backFromSettings" aria-label="Back">
             <svg
               viewBox="0 0 24 24"
               width="16"
@@ -202,11 +202,12 @@
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
+            Back
           </button>
           <h2 class="settings-title" data-i18n="settingsTitle">Settings</h2>
         </div>
 
-        <section class="settings-card">
+        <section class="settings-group">
           <div class="settings-row">
             <div class="settings-row-label">
               <span data-i18n="themeLabel">Theme</span>
@@ -242,8 +243,6 @@
             </div>
           </div>
 
-          <div class="settings-divider"></div>
-
           <div class="settings-row">
             <div class="settings-row-label">
               <span data-i18n="languageLabel">Language</span>
@@ -268,7 +267,7 @@
           </div>
         </section>
 
-        <section class="settings-card">
+        <section class="settings-group">
           <div class="settings-row">
             <div class="settings-row-label">
               <span data-i18n="aboutLabel">About</span>
@@ -284,8 +283,6 @@
               Open
             </button>
           </div>
-
-          <div class="settings-divider"></div>
 
           <div class="settings-row">
             <div class="settings-row-label">
