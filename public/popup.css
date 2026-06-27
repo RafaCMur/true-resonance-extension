@@ -903,6 +903,10 @@ footer {
   background: var(--card-bg);
 }
 
+[data-theme="dark"] .segment-btn img {
+  filter: brightness(0) invert(1);
+}
+
 /* ======================== BUTTONS: DANGER + COMPACT ======================== */
 .btn.compact {
   padding: 0.4rem 0.85rem;
