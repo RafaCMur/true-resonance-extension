@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [2.2.1] - 2026-06-26
+
+New version overriding old 2.2.0 already uploaded in the chrome web store
+
 ## [2.1.8] - 2026-06-26
 
 > **Note:** This is the first release published to the Chrome Web Store since 2.1.6. It bundles all 2.1.7 changes (hybrid audio architecture, Spotify Tier-2 support) which were not uploaded to the store.
