@@ -10,5 +10,16 @@
   "questions": "Questions?",
   "tooltipPitchOnly": "Changes only pitch while maintaining original speed",
   "tooltipSpeedPitch": "Changes both pitch and playback speed",
-  "upcomingBanner": "Spotify support is coming soon"
+  "spotifyBanner": "Spotify support is here!",
+  "settingsTitle": "Settings",
+  "themeLabel": "Theme",
+  "themeDesc": "Follow system, light, or dark",
+  "languageLabel": "Language",
+  "aboutLabel": "About",
+  "aboutDesc": "Version, author, links",
+  "openAbout": "Open",
+  "resetLabel": "Reset all settings",
+  "resetDesc": "Restore defaults",
+  "reset": "Reset",
+  "dismissAnnouncement": "Dismiss"
 }

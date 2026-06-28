@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## [2.1.8] - 2026-06-26
+
+> **Note:** This is the first release published to the Chrome Web Store since 2.1.6. It bundles all 2.1.7 changes (hybrid audio architecture, Spotify Tier-2 support) which were not uploaded to the store.
+
+### Added
+
+- **Settings view**: new in-popup screen opened from the gear icon, with a back-arrow header that replaces the top bar while active. Hides and shows the main view via `switchView('main' | 'settings')`.
+- **Segmented theme control** (Light / System / Dark) in Settings. Replaces the old 3-state cycle button. The slider indicator animates between segments via `transform: translateX`.
+- **Language dropdown moved to Settings**: no longer in the top bar.
+- **About row in Settings**: opens `about.html` in a new tab (moved from the old gear click behavior).
+- **Reset all settings** button in Settings: confirms via `window.confirm()`, then clears `state` (back to `enabled:false`, `pitch`, 440 Hz), removes `theme` and `language` from `chrome.storage.local`, clears the `theme` localStorage mirror, and reloads the popup.
+- **Spotify celebration banner**: replaces the stale "Spotify support is coming soon" banner with the official Spotify logo + "Spotify support is here" copy in the existing green gradient. Always visible (no auto-fade or dismiss).
+- **10 new i18n keys** in all 6 locales (`settingsTitle`, `themeLabel`, `themeDesc`, `languageLabel`, `aboutLabel`, `aboutDesc`, `openAbout`, `resetLabel`, `resetDesc`, `reset`).
+
+### Changed
+
+- **Top control bar simplified** to just Power + Gear. Theme and language controls no longer live there.
+- **`themeManager.cycle()` removed**: replaced by direct selection driven by the segmented control. The `themeManager.persist()` helper was extracted so it can be called from the new click handler.
+- **`themeManager.apply()` rewritten**: no longer references the deleted `#themeToggle`; instead moves `.segment-slider` to match the chosen theme and marks the matching `.segment-btn` active.
+
+### Removed
+
+- **`#themeToggle` button** from the top bar (theme control moved to Settings).
+- **Language dropdown** from the top bar (moved to Settings).
+- **"Spotify support is coming soon" banner** (replaced by the celebration banner).
+- **Dead `#enable-extension-toggle` references** in `popup.ts` (the HTML element never existed — pre-existing dead code).
+
+### Fixed
+
+- **`about.html` showed stale version `2.1.4`**: now reads `chrome.runtime.getManifest().version` dynamically, so it always reflects the installed build.
+
 ## [2.1.7] - 2026-06-26
 
 ### Added

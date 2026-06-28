@@ -8,19 +8,29 @@ import { i18n } from "../i18n/i18n";
 const elements = {
   // Control bar
   powerToggle: document.getElementById("powerToggle") as HTMLButtonElement,
-  themeToggle: document.getElementById("themeToggle") as HTMLButtonElement,
+  settingsBtn: document.getElementById("settingsBtn") as HTMLButtonElement,
+  backFromSettings: document.getElementById(
+    "backFromSettings"
+  ) as HTMLButtonElement,
+  openAboutBtn: document.getElementById("openAboutBtn") as HTMLButtonElement,
+  resetAllBtn: document.getElementById("resetAllBtn") as HTMLButtonElement,
+
+  // Views
+  mainView: document.getElementById("mainView") as HTMLElement,
+  settingsView: document.getElementById("settingsView") as HTMLElement,
+
+  // Settings: language
   languageBtn: document.getElementById("languageBtn") as HTMLButtonElement,
   languageMenu: document.getElementById("languageMenu") as HTMLElement,
-  settingsBtn: document.getElementById("settingsBtn") as HTMLButtonElement,
+
+  // Settings: theme segmented control
+  themeSegment: document.getElementById("themeSegment") as HTMLElement,
 
   // Layout
   disabledOverlay: document.getElementById("disabledOverlay") as HTMLElement,
   appContainer: document.querySelector(".app-container") as HTMLElement,
 
   // Controls
-  enableToggle: document.getElementById(
-    "enable-extension-toggle"
-  ) as HTMLInputElement,
   resetButton: document.getElementById("reset-btn") as HTMLButtonElement,
   pitchModeBtn: document.getElementById("pitch-mode-btn") as HTMLButtonElement,
   rateModeBtn: document.getElementById("rate-mode-btn") as HTMLButtonElement,
@@ -28,7 +38,27 @@ const elements = {
   // Presets
   preset432: document.getElementById("pitch-432-btn") as HTMLButtonElement,
   preset528: document.getElementById("pitch-528-btn") as HTMLButtonElement,
+
+  // Announcement banner
+  announcementBanner: document.querySelector(
+    ".announcement-banner"
+  ) as HTMLElement,
+
+  // Status info
+  statusSubtitle: document.getElementById("statusSubtitle") as HTMLElement,
 };
+
+const ANNOUNCEMENT_ID =
+  document
+    .querySelector(".announcement-banner")
+    ?.getAttribute("data-announcement-id") ?? null;
+
+function applyAnnouncementVisibility(dismissedId: string | null | undefined) {
+  if (!elements.announcementBanner || !ANNOUNCEMENT_ID) return;
+  const dismissed = dismissedId === ANNOUNCEMENT_ID;
+  elements.announcementBanner.classList.toggle("is-dismissed", dismissed);
+  elements.announcementBanner.style.display = dismissed ? "none" : "";
+}
 
 // ======================== STATE ========================
 let currentFrequency: Frequency = A4_STANDARD_FREQUENCY;
@@ -47,7 +77,6 @@ function updateUI(state: GlobalState) {
 
   // Update toggles
   elements.powerToggle?.classList.toggle("active", enabled);
-  if (elements.enableToggle) elements.enableToggle.checked = enabled;
 
   // Update mode buttons
   elements.rateModeBtn?.classList.toggle("active", mode === "rate");
@@ -57,6 +86,27 @@ function updateUI(state: GlobalState) {
   currentFrequency = frequency;
   elements.preset432?.classList.toggle("active", frequency === 432);
   elements.preset528?.classList.toggle("active", frequency === 528);
+
+  // Update status
+  updateStatusUI(state);
+}
+
+function updateStatusUI(state: GlobalState): void {
+  const el = elements.statusSubtitle;
+  if (!el) return;
+
+  const { enabled, frequency } = state;
+
+  if (!enabled) {
+    el.textContent = "Inactive";
+    el.classList.remove("active");
+  } else if (frequency === 440) {
+    el.textContent = "Active";
+    el.classList.add("active");
+  } else {
+    el.textContent = `Active \u00B7 ${frequency} Hz`;
+    el.classList.add("active");
+  }
 }
 
 function updateLanguageUI() {
@@ -64,6 +114,23 @@ function updateLanguageUI() {
     const key = element.getAttribute("data-i18n");
     if (key) element.textContent = i18n.t(key);
   });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    const key = element.getAttribute("data-i18n-aria-label");
+    if (key) element.setAttribute("aria-label", i18n.t(key));
+  });
+}
+
+// ======================== VIEW SWITCHING ========================
+function switchView(view: "main" | "settings"): void {
+  if (view === "settings") {
+    elements.mainView?.classList.add("hidden");
+    elements.settingsView?.classList.remove("hidden");
+    elements.appContainer?.setAttribute("data-view", "settings");
+  } else {
+    elements.settingsView?.classList.add("hidden");
+    elements.mainView?.classList.remove("hidden");
+    elements.appContainer?.setAttribute("data-view", "main");
+  }
 }
 
 // ======================== THEME MANAGEMENT ========================
@@ -87,12 +154,6 @@ function getStoredTheme(result: { theme?: unknown }): ThemeChoice {
     : "system";
 }
 
-const themeIconMap: Record<ThemeChoice, string> = {
-  light: "images/theme-light.svg",
-  dark: "images/theme-dark.svg",
-  system: "images/theme-auto.svg",
-};
-
 const themeManager = {
   current: "system" as ThemeChoice,
 
@@ -101,15 +162,21 @@ const themeManager = {
     const effective = resolveEffectiveTheme(choice);
     document.documentElement.setAttribute("data-theme", effective);
 
-    const icon = elements.themeToggle?.querySelector("img");
-    if (icon) {
-      icon.src = themeIconMap[choice];
-    }
-    elements.themeToggle?.classList.toggle("active", choice === "dark");
-    if (elements.themeToggle) {
-      const capitalized = choice.charAt(0).toUpperCase() + choice.slice(1);
-      elements.themeToggle.title =
-        choice === "system" ? "Theme: System (auto)" : `Theme: ${capitalized}`;
+    elements.themeSegment
+      ?.querySelectorAll(".segment-btn")
+      .forEach((btn) => {
+        const t = (btn as HTMLElement).dataset.theme;
+        btn.classList.toggle("active", t === choice);
+      });
+  },
+
+  persist(choice: ThemeChoice) {
+    if (choice === "system") {
+      chrome.storage.local.set({ theme: "system" });
+      localStorage.removeItem("theme");
+    } else {
+      chrome.storage.local.set({ theme: choice });
+      localStorage.setItem("theme", choice);
     }
   },
 
@@ -127,25 +194,6 @@ const themeManager = {
         localStorage.removeItem("theme");
       }
     });
-  },
-
-  cycle() {
-    const next: ThemeChoice =
-      this.current === "system"
-        ? "light"
-        : this.current === "light"
-        ? "dark"
-        : "system";
-
-    this.apply(next);
-
-    if (next === "system") {
-      chrome.storage.local.set({ theme: "system" });
-      localStorage.removeItem("theme");
-    } else {
-      chrome.storage.local.set({ theme: next });
-      localStorage.setItem("theme", next);
-    }
   },
 };
 
@@ -207,6 +255,11 @@ chrome.storage.onChanged.addListener(({ state, theme, language }) => {
   }
 });
 
+// Announcement banner: read persisted dismiss on load
+chrome.storage.local.get("dismissedAnnouncement", ({ dismissedAnnouncement }) => {
+  applyAnnouncementVisibility(dismissedAnnouncement);
+});
+
 // ======================== EVENT LISTENERS ========================
 // Power toggle
 elements.powerToggle?.addEventListener("click", () => {
@@ -218,10 +271,39 @@ elements.powerToggle?.addEventListener("click", () => {
   );
 });
 
-// Theme toggle
-elements.themeToggle?.addEventListener("click", () => themeManager.cycle());
+// Settings: open / back navigation
+elements.settingsBtn?.addEventListener("click", () => {
+  const isOpen = !elements.settingsView?.classList.contains("hidden");
+  switchView(isOpen ? "main" : "settings");
+});
+elements.backFromSettings?.addEventListener("click", () => switchView("main"));
 
-// Language dropdown
+// Announcement banner: dismiss persists across browser restarts
+const announcementDismissBtn = elements.announcementBanner?.querySelector(
+  ".announcement-dismiss"
+) as HTMLButtonElement | null;
+announcementDismissBtn?.addEventListener("click", () => {
+  if (!elements.announcementBanner) return;
+  elements.announcementBanner.classList.add("is-dismissed");
+  if (ANNOUNCEMENT_ID) {
+    chrome.storage.local.set({ dismissedAnnouncement: ANNOUNCEMENT_ID });
+  }
+  setTimeout(() => {
+    elements.announcementBanner.style.display = "none";
+  }, 260);
+});
+
+// Settings: theme segmented control
+elements.themeSegment?.querySelectorAll(".segment-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const choice = (btn as HTMLElement).dataset.theme as ThemeChoice | undefined;
+    if (!choice) return;
+    themeManager.apply(choice);
+    themeManager.persist(choice);
+  });
+});
+
+// Settings: language dropdown (moved from top bar, same logic)
 if (elements.languageBtn && elements.languageMenu) {
   elements.languageBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -252,17 +334,25 @@ if (elements.languageBtn && elements.languageMenu) {
   });
 }
 
-// Settings button
-elements.settingsBtn?.addEventListener("click", () => {
+// Settings: about
+elements.openAboutBtn?.addEventListener("click", () => {
   chrome.tabs.create({ url: chrome.runtime.getURL("about.html") });
 });
 
-// Legacy toggle (compatibility)
-elements.enableToggle?.addEventListener("change", () => {
-  const patch = elements.enableToggle.checked
-    ? { enabled: true, frequency: currentFrequency }
-    : { enabled: false };
-  sendPatch(patch);
+// Settings: reset all
+elements.resetAllBtn?.addEventListener("click", () => {
+  const confirmed = window.confirm(
+    "Reset all settings? This clears frequency, mode, theme, and language.",
+  );
+  if (!confirmed) return;
+
+  chrome.storage.local.set({ state: { enabled: false, mode: "pitch", frequency: A4_STANDARD_FREQUENCY } });
+  chrome.storage.local.remove("theme");
+  chrome.storage.local.remove("language");
+  chrome.storage.local.remove("dismissedAnnouncement");
+  localStorage.removeItem("theme");
+  sendPatch({ enabled: false, mode: "pitch", frequency: A4_STANDARD_FREQUENCY });
+  window.location.reload();
 });
 
 // Frequency controls

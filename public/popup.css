@@ -140,6 +140,9 @@ body {
 
 /* Top Control Bar */
 .top-control-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
@@ -148,11 +151,28 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-.control-group {
+.status-info {
+  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.status-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.status-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.status-subtitle.active {
+  color: var(--primary-color);
+  font-weight: 500;
 }
 
 .control-btn {
@@ -192,12 +212,6 @@ body {
 #powerToggle.active:hover {
   transform: scale(1.05);
   box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
-}
-
-#themeToggle.active,
-#settingsBtn.active {
-  background: var(--hover-bg);
-  color: var(--text-primary);
 }
 
 .control-btn img {
@@ -323,33 +337,156 @@ body {
   letter-spacing: 0.025em;
 }
 
-.upcoming-banner {
+/* ====================== ANNOUNCEMENT BANNER ====================== */
+.announcement-banner {
   margin: 0 0 calc(var(--spacing) * 0.9) 0;
-  padding: 0.55rem 1rem;
-  border-radius: 8888px;
+  padding: 0.5rem 0.6rem 0.5rem 0.95rem;
+  border-radius: 9999px;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
-  background: linear-gradient(135deg, #1ed760, #1db954);
-  border: none;
+  color: var(--text-color);
+  background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
   text-align: center;
   line-height: 1.35;
-  box-shadow: var(--shadow-sm);
-  display: block;
-  text-decoration: none;
-  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  letter-spacing: 0.015em;
+  position: relative;
+  overflow: hidden;
+  max-height: 60px;
+  box-shadow:
+    0 4px 14px rgba(99, 102, 241, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  animation: bannerSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    max-height 0.25s ease,
+    opacity 0.25s ease,
+    margin 0.25s ease,
+    padding 0.25s ease,
+    transform 0.25s ease;
 }
 
-.upcoming-banner-cta {
-  display: block;
-  margin-top: 0.1rem;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+.announcement-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(255, 255, 255, 0.6),
+    transparent 60%
+  );
+  pointer-events: none;
 }
 
-[data-theme="dark"] .upcoming-banner {
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.7);
+.announcement-banner > * {
+  position: relative;
+  z-index: 1;
+}
+
+.announcement-icon {
+  flex-shrink: 0;
+  color: var(--primary-color);
+  filter: drop-shadow(0 1px 2px rgba(99, 102, 241, 0.25));
+}
+
+.announcement-text {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.announcement-dismiss {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 9999px;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.announcement-dismiss:hover {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--text-color);
+  transform: scale(1.08);
+}
+
+.announcement-dismiss:active {
+  transform: scale(0.92);
+}
+
+.announcement-dismiss:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Dismissed state — collapses the banner out of layout */
+.announcement-banner.is-dismissed {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+
+/* Dark theme variant — translucent lilac glow on dark surface */
+[data-theme="dark"] .announcement-banner {
+  background: linear-gradient(
+    135deg,
+    rgba(129, 140, 248, 0.2) 0%,
+    rgba(196, 181, 253, 0.1) 100%
+  );
+  border-color: rgba(129, 140, 248, 0.3);
+  color: var(--text-color);
+  box-shadow:
+    0 4px 18px rgba(99, 102, 241, 0.15),
+    inset 0 1px 0 rgba(167, 139, 250, 0.08);
+}
+
+[data-theme="dark"] .announcement-banner::before {
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(167, 139, 250, 0.12),
+    transparent 65%
+  );
+}
+
+[data-theme="dark"] .announcement-icon {
+  color: var(--primary-light);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+[data-theme="dark"] .announcement-dismiss:hover {
+  background: rgba(167, 139, 250, 0.18);
+  color: var(--text-color);
+}
+
+@keyframes bannerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 60px;
+  }
 }
 
 .logo {
@@ -645,4 +782,159 @@ footer {
   color: var(--text-secondary);
   margin: 0.5rem 0 0 0;
   opacity: 0.8;
+}
+
+/* ======================== SETTINGS VIEW ======================== */
+.main-view,
+.settings-view {
+  transition: opacity 0.2s ease;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --- Settings view: hide top bar entirely --- */
+.app-container[data-view="settings"] .top-control-bar {
+  display: none;
+}
+
+/* --- Settings inline header (back arrow + title) --- */
+.settings-inline-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.settings-inline-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  letter-spacing: 0.01em;
+}
+
+/* --- Settings list (flat, no cards) --- */
+.settings-group {
+  margin-bottom: 0.5rem;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  min-height: 48px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-row-label > span:first-child {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.settings-row-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+
+/* ======================== SEGMENTED CONTROL ======================== */
+.segment-control {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  background: var(--background);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  padding: 3px;
+  min-width: 132px;
+  height: 32px;
+}
+
+.segment-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-secondary);
+  border-radius: 9999px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.segment-btn img {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.segment-btn:hover:not(.active) img {
+  opacity: 0.9;
+}
+
+.segment-btn.active {
+  background: var(--card-bg);
+  color: var(--text-color);
+  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(99, 102, 241, 0.15);
+}
+
+.segment-btn.active img {
+  opacity: 1;
+}
+
+[data-theme="dark"] .segment-control {
+  background: var(--card-bg);
+}
+
+[data-theme="dark"] .segment-btn img {
+  filter: brightness(0) invert(1);
+}
+
+/* ======================== BUTTONS: DANGER + COMPACT ======================== */
+.btn.compact {
+  padding: 0.4rem 0.85rem;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: 1.5px solid #ef4444;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  transform: scale(1.02);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .btn-danger {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+[data-theme="dark"] .btn-danger:hover {
+  background-color: #991b1b;
+  border-color: #991b1b;
 }

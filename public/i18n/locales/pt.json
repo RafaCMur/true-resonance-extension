@@ -10,5 +10,16 @@
   "questions": "Dúvidas?",
   "tooltipPitchOnly": "Altera apenas o tom mantendo a velocidade original",
   "tooltipSpeedPitch": "Altera tanto o tom quanto a velocidade de reprodução",
-  "upcomingBanner": "Suporte ao Spotify em breve"
+  "spotifyBanner": "Spotify já chegou!",
+  "settingsTitle": "Configurações",
+  "themeLabel": "Tema",
+  "themeDesc": "Sistema, claro ou escuro",
+  "languageLabel": "Idioma",
+  "aboutLabel": "Sobre",
+  "aboutDesc": "Versão, autor, links",
+  "openAbout": "Abrir",
+  "resetLabel": "Redefinir tudo",
+  "resetDesc": "Restaurar padrões",
+  "reset": "Redefinir",
+  "dismissAnnouncement": "Dispensar"
 }

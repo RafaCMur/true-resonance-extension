@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -19,154 +19,288 @@
 
       <!-- Top Control Bar -->
       <div class="top-control-bar">
-        <div class="control-group">
-          <button class="control-btn" id="powerToggle" title="Turn on/off">
-            <img src="images/power.svg" alt="Power" width="16" height="16" />
-          </button>
-          <button class="control-btn" id="themeToggle" title="Toggle theme">
-            <img
-              src="images/theme-light.svg"
-              alt="Theme"
-              width="16"
-              height="16"
-            />
-          </button>
-          <div class="language-dropdown">
-            <button
-              class="control-btn language-btn"
-              id="languageBtn"
-              title="Language"
-            >
-              EN
-            </button>
-            <div class="dropdown-menu" id="languageMenu">
-              <button class="dropdown-item active" data-lang="en">EN</button>
-              <button class="dropdown-item" data-lang="es">ES</button>
-              <button class="dropdown-item" data-lang="pt">PT</button>
-              <button class="dropdown-item" data-lang="fr">FR</button>
-              <button class="dropdown-item" data-lang="de">DE</button>
-              <button class="dropdown-item" data-lang="it">IT</button>
-            </div>
-          </div>
-          <button class="control-btn" id="settingsBtn" title="Settings">
-            <img
-              src="images/settings.svg"
-              alt="Settings"
-              width="16"
-              height="16"
-            />
-          </button>
+        <button class="control-btn" id="powerToggle" title="Turn on/off">
+          <img src="images/power.svg" alt="Power" width="16" height="16" />
+        </button>
+        <div class="status-info">
+          <span class="status-title">True Resonance</span>
+          <span class="status-subtitle" id="statusSubtitle">Inactive</span>
         </div>
-      </div>
-      <div class="upcoming-banner" data-i18n="upcomingBanner">
-        Spotify support is coming soon
+        <button class="control-btn" id="settingsBtn" title="Settings">
+          <img
+            src="images/settings.svg"
+            alt="Settings"
+            width="16"
+            height="16"
+          />
+        </button>
       </div>
 
-      <header class="header-brand">
-        <div class="brand-row">
-          <img class="logo" src="images/logo.svg" alt="True Resonance logo" />
-          <h2 class="title">True Resonance</h2>
-        </div>
-        <p class="subtitle" data-i18n="subtitle">
-          Play music in healing frequencies
-        </p>
-      </header>
-
-      <!-- Mode selector: pill segmented control -->
-      <div class="mode-toggle">
+      <div class="announcement-banner" data-announcement-id="spotify-launch">
+        <svg
+          class="announcement-icon"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12C24 5.4 18.66 0 12 0zm5.521 17.34c-.24.371-.74.49-1.111.241-3.04-1.86-6.871-2.279-11.391-1.241-.451.12-.901-.181-1.021-.631-.12-.451.181-.901.631-1.021 4.92-1.121 9.131-.661 12.501 1.401.371.241.491.741.241 1.121l.15.13zm1.471-3.27c-.301.46-.921.6-1.381.301-3.481-2.141-8.781-2.761-12.891-1.511-.531.16-1.091-.13-1.251-.661-.16-.531.13-1.091.661-1.251 4.691-1.411 10.501-.741 14.481 1.711.461.301.601.921.301 1.381l.08.03zm.131-3.47c-4.171-2.481-11.041-2.711-15.021-1.501-.631.19-1.291-.161-1.481-.791-.19-.631.161-1.291.791-1.481 4.561-1.371 12.081-1.101 16.881 1.781.601.36.791 1.131.431 1.731-.36.601-1.131.791-1.731.431l.13-.17z"
+          />
+        </svg>
+        <span class="announcement-text" data-i18n="spotifyBanner"
+          >Spotify support is here!</span
+        >
         <button
           type="button"
-          id="pitch-mode-btn"
-          class="mode-button pitch-btn active"
+          class="announcement-dismiss"
+          data-i18n-aria-label="dismissAnnouncement"
+          aria-label="Dismiss"
         >
-          <span data-i18n="pitchOnly">Pitch Only</span>
-          <svg
-            class="mode-icon"
-            stroke="currentColor"
-            fill="currentColor"
-            stroke-width="0"
-            viewBox="0 0 512 512"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
+          <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
             <path
-              d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-            ></path>
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              d="M3 3 L13 13 M13 3 L3 13"
+            />
           </svg>
-
-          <span class="tooltip" data-i18n="tooltipPitchOnly">
-            Tuning by <strong>Pitch Only</strong> keeps the speed unchanged, but
-            the audio can sound slightly less clean.
-          </span>
-        </button>
-        <button type="button" id="rate-mode-btn" class="mode-button rate-btn">
-          <span data-i18n="speedPitch">Speed & Pitch</span>
-          <svg
-            class="mode-icon"
-            stroke="currentColor"
-            fill="currentColor"
-            stroke-width="0"
-            viewBox="0 0 512 512"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-            ></path>
-          </svg>
-
-          <span class="tooltip" data-i18n="tooltipSpeedPitch">
-            Tuning by <strong>Speed & Pitch</strong> is very accurate but it
-            also changes the playback speed and any later speed changes in
-            YouTube will shift the pitch again.
-          </span>
         </button>
       </div>
 
-      <div class="preset-buttons">
-        <button id="pitch-432-btn" class="btn btn-outline preset-button">
-          432 Hz
-        </button>
-        <button id="pitch-528-btn" class="btn btn-outline preset-button">
-          528 Hz
-        </button>
-      </div>
+      <div class="main-view" id="mainView">
+        <header class="header-brand">
+          <div class="brand-row">
+            <img class="logo" src="images/logo.svg" alt="True Resonance logo" />
+            <h2 class="title">True Resonance</h2>
+          </div>
+          <p class="subtitle" data-i18n="subtitle">
+            Play music in healing frequencies
+          </p>
+        </header>
 
-      <div class="reset-container">
-        <button id="reset-btn" class="btn btn-outline reset-button">
-          <span data-i18n="resetButton">Reset to 440 Hz</span>
-        </button>
-      </div>
-
-      <footer>
-        <p class="footer-text">
-          <span data-i18n="footerText">Free for everyone. Support us!</span> ☕
-        </p>
-
-        <div class="footer-buttons">
-          <a
-            class="btn btn-primary primary-link compact"
-            href="https://github.com/RafaCMur/true-resonance"
-            target="_blank"
-            rel="noopener noreferrer"
+        <!-- Mode selector: pill segmented control -->
+        <div class="mode-toggle">
+          <button
+            type="button"
+            id="pitch-mode-btn"
+            class="mode-button pitch-btn active"
           >
-            <span data-i18n="contribute">Contribute</span>
-          </a>
+            <span data-i18n="pitchOnly">Pitch Only</span>
+            <svg
+              class="mode-icon"
+              stroke="currentColor"
+              fill="currentColor"
+              stroke-width="0"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+              ></path>
+            </svg>
 
-          <a
-            class="btn btn-primary primary-link compact"
-            href="https://www.paypal.com/donate/?hosted_button_id=TJYW36JX2NY48"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span data-i18n="donate">Donate</span>
-          </a>
+            <span class="tooltip" data-i18n="tooltipPitchOnly">
+              Tuning by <strong>Pitch Only</strong> keeps the speed unchanged,
+              but the audio can sound slightly less clean.
+            </span>
+          </button>
+          <button type="button" id="rate-mode-btn" class="mode-button rate-btn">
+            <span data-i18n="speedPitch">Speed & Pitch</span>
+            <svg
+              class="mode-icon"
+              stroke="currentColor"
+              fill="currentColor"
+              stroke-width="0"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+              ></path>
+            </svg>
+
+            <span class="tooltip" data-i18n="tooltipSpeedPitch">
+              Tuning by <strong>Speed & Pitch</strong> is very accurate but it
+              also changes the playback speed and any later speed changes in
+              YouTube will shift the pitch again.
+            </span>
+          </button>
         </div>
 
-        <p class="contact-text">
-          <span data-i18n="questions">Questions?</span> rafacmurdev@gmail.com
-        </p>
-      </footer>
+        <div class="preset-buttons">
+          <button id="pitch-432-btn" class="btn btn-outline preset-button">
+            432 Hz
+          </button>
+          <button id="pitch-528-btn" class="btn btn-outline preset-button">
+            528 Hz
+          </button>
+        </div>
+
+        <div class="reset-container">
+          <button id="reset-btn" class="btn btn-outline reset-button">
+            <span data-i18n="resetButton">Reset to 440 Hz</span>
+          </button>
+        </div>
+
+        <footer>
+          <p class="footer-text">
+            <span data-i18n="footerText">Free for everyone. Support us!</span>
+            ☕
+          </p>
+
+          <div class="footer-buttons">
+            <a
+              class="btn btn-primary primary-link compact"
+              href="https://github.com/RafaCMur/true-resonance"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span data-i18n="contribute">Contribute</span>
+            </a>
+
+            <a
+              class="btn btn-primary primary-link compact"
+              href="https://www.paypal.com/donate/?hosted_button_id=TJYW36JX2NY48"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span data-i18n="donate">Donate</span>
+            </a>
+          </div>
+
+          <p class="contact-text">
+            <span data-i18n="questions">Questions?</span> rafacmurdev@gmail.com
+          </p>
+        </footer>
+      </div>
+
+      <!-- Settings view -->
+      <div class="settings-view hidden" id="settingsView">
+        <div class="settings-inline-header">
+          <button
+            class="control-btn"
+            id="backFromSettings"
+            aria-label="Back"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <span class="settings-inline-title" data-i18n="settingsTitle"
+            >Settings</span
+          >
+        </div>
+
+        <section class="settings-group">
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span data-i18n="themeLabel">Theme</span>
+              <span class="settings-row-desc" data-i18n="themeDesc">
+                Follow system, light, or dark
+              </span>
+            </div>
+            <div class="segment-control theme-segment" id="themeSegment">
+              <button class="segment-btn" data-theme="light" title="Light">
+                <img
+                  src="images/theme-light.svg"
+                  alt="Light"
+                  width="14"
+                  height="14"
+                />
+              </button>
+              <button class="segment-btn" data-theme="system" title="System">
+                <img
+                  src="images/theme-auto.svg"
+                  alt="System"
+                  width="14"
+                  height="14"
+                />
+              </button>
+              <button class="segment-btn" data-theme="dark" title="Dark">
+                <img
+                  src="images/theme-dark.svg"
+                  alt="Dark"
+                  width="14"
+                  height="14"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span data-i18n="languageLabel">Language</span>
+            </div>
+            <div class="language-dropdown">
+              <button
+                class="control-btn language-btn"
+                id="languageBtn"
+                title="Language"
+              >
+                EN
+              </button>
+              <div class="dropdown-menu" id="languageMenu">
+                <button class="dropdown-item active" data-lang="en">EN</button>
+                <button class="dropdown-item" data-lang="es">ES</button>
+                <button class="dropdown-item" data-lang="pt">PT</button>
+                <button class="dropdown-item" data-lang="fr">FR</button>
+                <button class="dropdown-item" data-lang="de">DE</button>
+                <button class="dropdown-item" data-lang="it">IT</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-group">
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span data-i18n="aboutLabel">About</span>
+              <span class="settings-row-desc" data-i18n="aboutDesc">
+                Version, author, links
+              </span>
+            </div>
+            <button
+              class="btn btn-outline compact"
+              id="openAboutBtn"
+              data-i18n="openAbout"
+            >
+              Open
+            </button>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span data-i18n="resetLabel">Reset all settings</span>
+              <span class="settings-row-desc" data-i18n="resetDesc">
+                Restore defaults
+              </span>
+            </div>
+            <button
+              class="btn btn-danger compact"
+              id="resetAllBtn"
+              data-i18n="reset"
+            >
+              Reset
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
 
     <script src="popup.js"></script>
