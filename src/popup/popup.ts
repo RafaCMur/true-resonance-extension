@@ -125,9 +125,11 @@ function switchView(view: "main" | "settings"): void {
   if (view === "settings") {
     elements.mainView?.classList.add("hidden");
     elements.settingsView?.classList.remove("hidden");
+    elements.appContainer?.setAttribute("data-view", "settings");
   } else {
     elements.settingsView?.classList.add("hidden");
     elements.mainView?.classList.remove("hidden");
+    elements.appContainer?.setAttribute("data-view", "main");
   }
 }
 
