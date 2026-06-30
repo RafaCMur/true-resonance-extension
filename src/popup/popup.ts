@@ -87,6 +87,13 @@ function updateUI(state: GlobalState) {
   elements.preset432?.classList.toggle("active", frequency === 432);
   elements.preset528?.classList.toggle("active", frequency === 528);
 
+  // ARIA pressed states
+  elements.powerToggle?.setAttribute("aria-pressed", String(enabled));
+  elements.pitchModeBtn?.setAttribute("aria-pressed", String(mode === "pitch"));
+  elements.rateModeBtn?.setAttribute("aria-pressed", String(mode === "rate"));
+  elements.preset432?.setAttribute("aria-pressed", String(frequency === 432));
+  elements.preset528?.setAttribute("aria-pressed", String(frequency === 528));
+
   // Update status
   updateStatusUI(state);
 }
@@ -124,11 +131,15 @@ function updateLanguageUI() {
 function switchView(view: "main" | "settings"): void {
   if (view === "settings") {
     elements.mainView?.classList.add("hidden");
+    elements.mainView?.setAttribute("inert", "");
     elements.settingsView?.classList.remove("hidden");
+    elements.settingsView?.removeAttribute("inert");
     elements.appContainer?.setAttribute("data-view", "settings");
   } else {
     elements.settingsView?.classList.add("hidden");
+    elements.settingsView?.setAttribute("inert", "");
     elements.mainView?.classList.remove("hidden");
+    elements.mainView?.removeAttribute("inert");
     elements.appContainer?.setAttribute("data-view", "main");
   }
 }
@@ -167,6 +178,7 @@ const themeManager = {
       .forEach((btn) => {
         const t = (btn as HTMLElement).dataset.theme;
         btn.classList.toggle("active", t === choice);
+        btn.setAttribute("aria-pressed", String(t === choice));
       });
   },
 
@@ -213,11 +225,12 @@ const languageManager = {
     }
 
     // Update dropdown selection
-    elements.languageMenu
-      ?.querySelectorAll(".dropdown-item")
-      .forEach((item) => {
-        const lang = (item as HTMLElement).dataset.lang;
-        item.classList.toggle("active", lang === currentLang);
+      elements.languageMenu
+        ?.querySelectorAll(".dropdown-item")
+        .forEach((item) => {
+          const lang = (item as HTMLElement).dataset.lang;
+          item.classList.toggle("active", lang === currentLang);
+        item.setAttribute("aria-pressed", String(lang === currentLang));
       });
   },
 
@@ -229,6 +242,14 @@ const languageManager = {
     if (elements.languageBtn) {
       elements.languageBtn.textContent = lang.toUpperCase();
     }
+
+    elements.languageMenu
+      ?.querySelectorAll(".dropdown-item")
+      .forEach((item) => {
+        const itemLang = (item as HTMLElement).dataset.lang;
+        item.classList.toggle("active", itemLang === lang);
+        item.setAttribute("aria-pressed", String(itemLang === lang));
+      });
   },
 };
 
@@ -323,8 +344,12 @@ if (elements.languageBtn && elements.languageMenu) {
         // Update UI
         elements.languageMenu
           .querySelectorAll(".dropdown-item")
-          .forEach((i) => i.classList.remove("active"));
+          .forEach((i) => {
+            i.classList.remove("active");
+            i.setAttribute("aria-pressed", "false");
+          });
         item.classList.add("active");
+        item.setAttribute("aria-pressed", "true");
         elements.languageMenu.classList.remove("show");
 
         // Change language
