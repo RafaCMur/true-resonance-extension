@@ -21,5 +21,14 @@
   "resetLabel": "Redefinir tudo",
   "resetDesc": "Restaurar padrões",
   "reset": "Redefinir",
-  "dismissAnnouncement": "Dispensar"
+  "dismissAnnouncement": "Dispensar",
+  "aboutTitle": "True Resonance - Sobre",
+  "aboutExtensionInfo": "Informações da extensão",
+  "aboutName": "Nome:",
+  "aboutVersion": "Versão:",
+  "aboutAuthor": "Autor:",
+  "aboutLinks": "Links",
+  "aboutGitHub": "Repositório GitHub",
+  "aboutDonate": "Apoiar o desenvolvimento",
+  "aboutContact": "Dúvidas? rafacmurdev@gmail.com"
 }
