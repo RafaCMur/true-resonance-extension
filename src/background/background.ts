@@ -149,40 +149,8 @@ function handleSetTabCapturePitch(): void {
     .catch(() => {});
 }
 
-async function injectIntoExistingTabs(): Promise<void> {
-  const tabs = await chrome.tabs.query({});
-  for (const tab of tabs) {
-    if (tab.id === undefined) continue;
-    const url = tab.url ?? "";
-    if (
-      url.startsWith("chrome://") ||
-      url.startsWith("edge://") ||
-      url.startsWith("about:") ||
-      url.startsWith("chrome-extension://")
-    ) {
-      continue;
-    }
-    try {
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id, allFrames: true },
-        files: ["injected.js"],
-        world: "MAIN",
-      });
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id, allFrames: true },
-        files: ["content_script.js"],
-      });
-    } catch {
-      // protected pages (Chrome Web Store, file://, etc.) — silently ignore
-    }
-  }
-}
-
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener(() => {
   initializeExtension();
-  if (details.reason === "install") {
-    void injectIntoExistingTabs();
-  }
 });
 
 chrome.tabs.onActivated.addListener(() => {

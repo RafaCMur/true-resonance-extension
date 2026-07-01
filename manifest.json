@@ -10,11 +10,10 @@
     "tabCapture",
     "offscreen",
     "tabs",
-    "scripting",
     "activeTab",
     "sidePanel"
   ],
-  "host_permissions": ["<all_urls>"],
+
   "background": {
     "service_worker": "background.js"
   },

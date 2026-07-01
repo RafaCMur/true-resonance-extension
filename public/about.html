@@ -4,10 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title data-i18n="aboutTitle">True Resonance - About</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="about.css" />
   </head>
   <body>
@@ -65,32 +61,6 @@
         </section>
       </main>
     </div>
-    <script>
-      document.getElementById("version").textContent =
-        chrome.runtime.getManifest().version;
-
-      (async function () {
-        try {
-          const result = await new Promise(function (resolve) {
-            chrome.storage.local.get(["language"], resolve);
-          });
-          const lang = result.language || "en";
-          const resp = await fetch("i18n/locales/" + lang + ".json");
-          if (!resp.ok) throw new Error("failed to load i18n");
-          const translations = await resp.json();
-          document.querySelectorAll("[data-i18n]").forEach(function (el) {
-            var key = el.getAttribute("data-i18n");
-            if (key && translations[key]) {
-              el.textContent = translations[key];
-            }
-          });
-          if (translations.aboutTitle) {
-            document.title = translations.aboutTitle;
-          }
-        } catch (e) {
-          console.warn("True Resonance: about page i18n failed", e);
-        }
-      })();
-    </script>
+    <script src="about.js"></script>
   </body>
 </html>
