@@ -30,5 +30,6 @@
   "aboutLinks": "Links",
   "aboutGitHub": "GitHub Repository",
   "aboutDonate": "Support Development",
-  "aboutContact": "Questions? rafacmurdev@gmail.com"
+  "aboutContact": "Questions? rafacmurdev@gmail.com",
+  "reloadPage": "Reload page to activate"
 }

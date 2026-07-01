@@ -46,6 +46,9 @@ const elements = {
 
   // Status info
   statusSubtitle: document.getElementById("statusSubtitle") as HTMLElement,
+
+  // Reload banner
+  reloadBanner: document.getElementById("reloadBanner") as HTMLButtonElement,
 };
 
 const ANNOUNCEMENT_ID =
@@ -281,6 +284,34 @@ chrome.storage.local.get("dismissedAnnouncement", ({ dismissedAnnouncement }) =>
   applyAnnouncementVisibility(dismissedAnnouncement);
 });
 
+// ======================== RELOAD BANNER ========================
+async function checkReloadBanner(): Promise<void> {
+  const banner = elements.reloadBanner;
+  if (!banner) return;
+
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id || !tab.url) {
+      banner.hidden = true;
+      return;
+    }
+    const url = tab.url;
+    if (
+      url.startsWith("chrome://") ||
+      url.startsWith("edge://") ||
+      url.startsWith("about:") ||
+      url.startsWith("chrome-extension://")
+    ) {
+      banner.hidden = true;
+      return;
+    }
+    await chrome.tabs.sendMessage(tab.id, { action: "_tr_heartbeat" });
+    banner.hidden = true;
+  } catch {
+    banner.hidden = false;
+  }
+}
+
 // ======================== EVENT LISTENERS ========================
 // Power toggle
 elements.powerToggle?.addEventListener("click", () => {
@@ -380,6 +411,14 @@ elements.resetAllBtn?.addEventListener("click", () => {
   window.location.reload();
 });
 
+// Reload banner: reload the current tab
+elements.reloadBanner?.addEventListener("click", async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab?.id) {
+    chrome.tabs.reload(tab.id);
+  }
+});
+
 // Frequency controls
 elements.preset432?.addEventListener("click", () => {
   currentFrequency = 432;
@@ -407,6 +446,16 @@ elements.pitchModeBtn?.addEventListener("click", () =>
 (async function init() {
   themeManager.init();
   await languageManager.init();
+  void checkReloadBanner();
 })();
+
+chrome.tabs.onActivated.addListener(() => {
+  void checkReloadBanner();
+});
+chrome.tabs.onUpdated.addListener((_tabId, changeInfo) => {
+  if (changeInfo.status === "complete") {
+    void checkReloadBanner();
+  }
+});
 
 export {}; // This is to prevent the file from being a module and isolates the variables (errors from typescript)
