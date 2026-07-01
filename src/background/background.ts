@@ -1,4 +1,4 @@
-import { A4_STANDARD_FREQUENCY, computePitchRatio } from "../shared/constants";
+import { A4_STANDARD_FREQUENCY, SOLFEGGIO_REFERENCE, computePitchRatio } from "../shared/constants";
 import { GlobalState } from "../shared/types";
 
 const DEFAULT_STATE: GlobalState = {
@@ -182,7 +182,10 @@ function setState(patch: Partial<GlobalState>) {
   }
 }
 
-const VALID_FREQUENCIES = new Set([174, 285, 396, 415, 432, 440, 528, 639, 741, 852, 963]);
+const VALID_FREQUENCIES = new Set<number>([
+  ...Object.keys(SOLFEGGIO_REFERENCE).map(Number),
+  A4_STANDARD_FREQUENCY,
+]);
 const VALID_MODES = new Set(["pitch", "rate"]);
 
 /**

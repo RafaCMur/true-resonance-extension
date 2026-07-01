@@ -36,10 +36,7 @@ const elements = {
   rateModeBtn: document.getElementById("rate-mode-btn") as HTMLButtonElement,
 
   // Presets
-  preset396: document.getElementById("pitch-396-btn") as HTMLButtonElement,
-  preset432: document.getElementById("pitch-432-btn") as HTMLButtonElement,
-  preset528: document.getElementById("pitch-528-btn") as HTMLButtonElement,
-  preset639: document.getElementById("pitch-639-btn") as HTMLButtonElement,
+  presetGrid: document.querySelector(".preset-grid") as HTMLElement,
 
   // More frequencies dropdown
   moreFrequenciesBtn: document.getElementById(
@@ -97,19 +94,16 @@ function updateUI(state: GlobalState) {
 
   // Update frequency
   currentFrequency = frequency;
-  elements.preset396?.classList.toggle("active", frequency === 396);
-  elements.preset432?.classList.toggle("active", frequency === 432);
-  elements.preset528?.classList.toggle("active", frequency === 528);
-  elements.preset639?.classList.toggle("active", frequency === 639);
+  elements.presetGrid?.querySelectorAll("[data-freq]").forEach((btn) => {
+    const freq = parseInt((btn as HTMLElement).dataset.freq ?? "", 10);
+    btn.classList.toggle("active", freq === frequency);
+    btn.setAttribute("aria-pressed", String(freq === frequency));
+  });
 
   // ARIA pressed states
   elements.powerToggle?.setAttribute("aria-pressed", String(enabled));
   elements.pitchModeBtn?.setAttribute("aria-pressed", String(mode === "pitch"));
   elements.rateModeBtn?.setAttribute("aria-pressed", String(mode === "rate"));
-  elements.preset396?.setAttribute("aria-pressed", String(frequency === 396));
-  elements.preset432?.setAttribute("aria-pressed", String(frequency === 432));
-  elements.preset528?.setAttribute("aria-pressed", String(frequency === 528));
-  elements.preset639?.setAttribute("aria-pressed", String(frequency === 639));
 
   // Update dropdown items active state
   updateDropdownActive(frequency);
@@ -450,24 +444,14 @@ elements.reloadBanner?.addEventListener("click", async () => {
 });
 
 // Frequency controls
-elements.preset396?.addEventListener("click", () => {
-  currentFrequency = 396;
-  sendPatch({ frequency: 396 });
-});
-
-elements.preset432?.addEventListener("click", () => {
-  currentFrequency = 432;
-  sendPatch({ frequency: 432 });
-});
-
-elements.preset528?.addEventListener("click", () => {
-  currentFrequency = 528;
-  sendPatch({ frequency: 528 });
-});
-
-elements.preset639?.addEventListener("click", () => {
-  currentFrequency = 639;
-  sendPatch({ frequency: 639 });
+elements.presetGrid?.querySelectorAll("[data-freq]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const freq = parseInt((btn as HTMLElement).dataset.freq ?? "", 10);
+    if (!isNaN(freq)) {
+      currentFrequency = freq as Frequency;
+      sendPatch({ frequency: currentFrequency });
+    }
+  });
 });
 
 elements.resetButton?.addEventListener("click", () => {
