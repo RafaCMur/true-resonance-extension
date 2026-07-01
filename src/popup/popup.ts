@@ -431,7 +431,6 @@ elements.resetAllBtn?.addEventListener("click", () => {
   chrome.storage.local.remove("language");
   chrome.storage.local.remove("dismissedAnnouncement");
   localStorage.removeItem("theme");
-  sendPatch({ enabled: false, mode: "pitch", frequency: A4_STANDARD_FREQUENCY });
   window.location.reload();
 });
 
