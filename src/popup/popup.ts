@@ -38,13 +38,9 @@ const elements = {
   // Presets
   presetGrid: document.querySelector(".preset-grid") as HTMLElement,
 
-  // More frequencies dropdown
-  moreFrequenciesBtn: document.getElementById(
-    "moreFrequenciesBtn"
-  ) as HTMLButtonElement,
-  moreFrequenciesMenu: document.getElementById(
-    "moreFrequenciesMenu"
-  ) as HTMLElement,
+  // Toggle more frequencies
+  toggleMoreFreqs: document.getElementById("toggleMoreFreqs") as HTMLButtonElement,
+  secondaryFreqGrid: document.getElementById("secondaryFreqGrid") as HTMLElement,
 
   // Announcement banner
   announcementBanner: document.querySelector(
@@ -94,7 +90,7 @@ function updateUI(state: GlobalState) {
 
   // Update frequency
   currentFrequency = frequency;
-  elements.presetGrid?.querySelectorAll("[data-freq]").forEach((btn) => {
+  document.querySelectorAll("[data-freq]").forEach((btn) => {
     const freq = parseInt((btn as HTMLElement).dataset.freq ?? "", 10);
     btn.classList.toggle("active", freq === frequency);
     btn.setAttribute("aria-pressed", String(freq === frequency));
@@ -104,9 +100,6 @@ function updateUI(state: GlobalState) {
   elements.powerToggle?.setAttribute("aria-pressed", String(enabled));
   elements.pitchModeBtn?.setAttribute("aria-pressed", String(mode === "pitch"));
   elements.rateModeBtn?.setAttribute("aria-pressed", String(mode === "rate"));
-
-  // Update dropdown items active state
-  updateDropdownActive(frequency);
 
   // Update status
   updateStatusUI(state);
@@ -128,19 +121,6 @@ function updateStatusUI(state: GlobalState): void {
     el.textContent = `Active \u00B7 ${frequency} Hz`;
     el.classList.add("active");
   }
-}
-
-function updateDropdownActive(frequency: Frequency): void {
-  elements.moreFrequenciesMenu
-    ?.querySelectorAll(".dropdown-item")
-    .forEach((item) => {
-      const freq = parseInt(
-        (item as HTMLElement).dataset.freq ?? "",
-        10
-      );
-      item.classList.toggle("active", freq === frequency);
-      item.setAttribute("aria-pressed", String(freq === frequency));
-    });
 }
 
 function updateLanguageUI() {
@@ -457,32 +437,27 @@ elements.resetButton?.addEventListener("click", () => {
   sendPatch({ frequency: A4_STANDARD_FREQUENCY });
 });
 
-// More frequencies dropdown
-elements.moreFrequenciesBtn?.addEventListener("click", (e) => {
-  e.stopPropagation();
-  elements.moreFrequenciesMenu?.classList.toggle("show");
+// Toggle more frequencies
+elements.toggleMoreFreqs?.addEventListener("click", () => {
+  const isExpanded = elements.toggleMoreFreqs.getAttribute("aria-expanded") === "true";
+  elements.toggleMoreFreqs.setAttribute("aria-expanded", String(!isExpanded));
+  elements.secondaryFreqGrid?.classList.toggle("hidden");
+  const label = isExpanded ? "showMoreOptions" : "showLessOptions";
+  const span = elements.toggleMoreFreqs.querySelector("[data-i18n]");
+  if (span) span.setAttribute("data-i18n", label);
+  updateLanguageUI();
 });
 
-document.addEventListener("click", () => {
-  elements.moreFrequenciesMenu?.classList.remove("show");
-});
-
-elements.moreFrequenciesMenu
-  ?.querySelectorAll(".dropdown-item")
-  .forEach((item) => {
-    item.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const freq = parseInt(
-        (item as HTMLElement).dataset.freq ?? "",
-        10
-      );
-      if (!isNaN(freq)) {
-        currentFrequency = freq as Frequency;
-        sendPatch({ frequency: currentFrequency });
-        elements.moreFrequenciesMenu?.classList.remove("show");
-      }
-    });
+// Secondary frequency buttons (event delegation)
+elements.secondaryFreqGrid?.querySelectorAll("[data-freq]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const freq = parseInt((btn as HTMLElement).dataset.freq ?? "", 10);
+    if (!isNaN(freq)) {
+      currentFrequency = freq as Frequency;
+      sendPatch({ frequency: currentFrequency });
+    }
   });
+});
 
 // Mode buttons
 elements.rateModeBtn?.addEventListener("click", () =>

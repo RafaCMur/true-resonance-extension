@@ -164,21 +164,20 @@
           </button>
         </div>
 
-        <div class="more-frequencies-dropdown">
-          <button class="btn btn-outline" id="moreFrequenciesBtn" type="button">
-            <span data-i18n="moreFrequencies">More frequencies</span>
-            <svg class="dropdown-arrow" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
-              <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2 4 L6 8 L10 4" />
-            </svg>
-          </button>
-          <div class="dropdown-menu" id="moreFrequenciesMenu">
-            <button class="dropdown-item" data-freq="174" aria-pressed="false">174 Hz</button>
-            <button class="dropdown-item" data-freq="285" aria-pressed="false">285 Hz</button>
-            <button class="dropdown-item" data-freq="415" aria-pressed="false">415 Hz</button>
-            <button class="dropdown-item" data-freq="741" aria-pressed="false">741 Hz</button>
-            <button class="dropdown-item" data-freq="852" aria-pressed="false">852 Hz</button>
-            <button class="dropdown-item" data-freq="963" aria-pressed="false">963 Hz</button>
-          </div>
+        <button class="btn btn-outline toggle-more-btn" id="toggleMoreFreqs" type="button">
+          <span data-i18n="showMoreOptions">Show More Options</span>
+          <svg class="toggle-arrow" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2 4 L6 8 L10 4" />
+          </svg>
+        </button>
+
+        <div class="preset-grid secondary-frequencies hidden" id="secondaryFreqGrid">
+          <button class="btn btn-outline preset-button" data-freq="174" aria-pressed="false">174 Hz</button>
+          <button class="btn btn-outline preset-button" data-freq="285" aria-pressed="false">285 Hz</button>
+          <button class="btn btn-outline preset-button" data-freq="415" aria-pressed="false">415 Hz</button>
+          <button class="btn btn-outline preset-button" data-freq="741" aria-pressed="false">741 Hz</button>
+          <button class="btn btn-outline preset-button" data-freq="852" aria-pressed="false">852 Hz</button>
+          <button class="btn btn-outline preset-button" data-freq="963" aria-pressed="false">963 Hz</button>
         </div>
 
         <div class="reset-container">
