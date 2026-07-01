@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import { getReferenceFreq } from "../src/shared/constants";
 import {
-  getReferenceFreq,
   setMode,
   setFrequency,
   recalculateFactors,
@@ -23,8 +23,12 @@ describe("getReferenceFreq", () => {
     expect(getReferenceFreq(440)).toBe(440);
   });
 
+  it("returns A4_STANDARD_FREQUENCY (440) for 415 (Baroque)", () => {
+    expect(getReferenceFreq(415)).toBe(440);
+  });
+
   it("returns C5_STANDARD_FREQUENCY (523.25...) for 528", () => {
-    expect(getReferenceFreq(528)).toBeCloseTo(523.2511306011972, 10);
+    expect(getReferenceFreq(528)).toBeCloseTo(523.25, 10);
   });
 });
 
@@ -37,6 +41,16 @@ describe("recalculateFactors + getState", () => {
     expect(s.currentPlaybackRate).toBe(1);
     expect(s.currentPitch).toBeCloseTo(432 / 440, 10);
     expect(s.currentSemitones).toBeCloseTo(12 * Math.log2(432 / 440), 10);
+  });
+
+  it("415 Hz Baroque pitch mode uses A4 reference", () => {
+    setFrequency(415);
+    setMode("pitch");
+    recalculateFactors();
+    const s = getState();
+    expect(s.currentPlaybackRate).toBe(1);
+    expect(s.currentPitch).toBeCloseTo(415 / 440, 10);
+    expect(s.currentSemitones).toBeCloseTo(12 * Math.log2(415 / 440), 10);
   });
 
   it("rate mode: playbackRate = frequency/ref, pitch = 1", () => {
@@ -54,7 +68,7 @@ describe("recalculateFactors + getState", () => {
     setMode("pitch");
     recalculateFactors();
     const s = getState();
-    expect(s.currentPitch).toBeCloseTo(528 / 523.2511306011972, 10);
+    expect(s.currentPitch).toBeCloseTo(528 / 523.25, 10);
     expect(s.currentPlaybackRate).toBe(1);
   });
 

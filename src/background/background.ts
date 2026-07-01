@@ -182,7 +182,7 @@ function setState(patch: Partial<GlobalState>) {
   }
 }
 
-const VALID_FREQUENCIES = new Set([432, 440, 528]);
+const VALID_FREQUENCIES = new Set([174, 285, 396, 415, 432, 440, 528, 639, 741, 852, 963]);
 const VALID_MODES = new Set(["pitch", "rate"]);
 
 /**

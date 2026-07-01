@@ -36,8 +36,18 @@ const elements = {
   rateModeBtn: document.getElementById("rate-mode-btn") as HTMLButtonElement,
 
   // Presets
+  preset396: document.getElementById("pitch-396-btn") as HTMLButtonElement,
   preset432: document.getElementById("pitch-432-btn") as HTMLButtonElement,
   preset528: document.getElementById("pitch-528-btn") as HTMLButtonElement,
+  preset639: document.getElementById("pitch-639-btn") as HTMLButtonElement,
+
+  // More frequencies dropdown
+  moreFrequenciesBtn: document.getElementById(
+    "moreFrequenciesBtn"
+  ) as HTMLButtonElement,
+  moreFrequenciesMenu: document.getElementById(
+    "moreFrequenciesMenu"
+  ) as HTMLElement,
 
   // Announcement banner
   announcementBanner: document.querySelector(
@@ -87,15 +97,22 @@ function updateUI(state: GlobalState) {
 
   // Update frequency
   currentFrequency = frequency;
+  elements.preset396?.classList.toggle("active", frequency === 396);
   elements.preset432?.classList.toggle("active", frequency === 432);
   elements.preset528?.classList.toggle("active", frequency === 528);
+  elements.preset639?.classList.toggle("active", frequency === 639);
 
   // ARIA pressed states
   elements.powerToggle?.setAttribute("aria-pressed", String(enabled));
   elements.pitchModeBtn?.setAttribute("aria-pressed", String(mode === "pitch"));
   elements.rateModeBtn?.setAttribute("aria-pressed", String(mode === "rate"));
+  elements.preset396?.setAttribute("aria-pressed", String(frequency === 396));
   elements.preset432?.setAttribute("aria-pressed", String(frequency === 432));
   elements.preset528?.setAttribute("aria-pressed", String(frequency === 528));
+  elements.preset639?.setAttribute("aria-pressed", String(frequency === 639));
+
+  // Update dropdown items active state
+  updateDropdownActive(frequency);
 
   // Update status
   updateStatusUI(state);
@@ -117,6 +134,19 @@ function updateStatusUI(state: GlobalState): void {
     el.textContent = `Active \u00B7 ${frequency} Hz`;
     el.classList.add("active");
   }
+}
+
+function updateDropdownActive(frequency: Frequency): void {
+  elements.moreFrequenciesMenu
+    ?.querySelectorAll(".dropdown-item")
+    .forEach((item) => {
+      const freq = parseInt(
+        (item as HTMLElement).dataset.freq ?? "",
+        10
+      );
+      item.classList.toggle("active", freq === frequency);
+      item.setAttribute("aria-pressed", String(freq === frequency));
+    });
 }
 
 function updateLanguageUI() {
@@ -420,6 +450,11 @@ elements.reloadBanner?.addEventListener("click", async () => {
 });
 
 // Frequency controls
+elements.preset396?.addEventListener("click", () => {
+  currentFrequency = 396;
+  sendPatch({ frequency: 396 });
+});
+
 elements.preset432?.addEventListener("click", () => {
   currentFrequency = 432;
   sendPatch({ frequency: 432 });
@@ -430,9 +465,41 @@ elements.preset528?.addEventListener("click", () => {
   sendPatch({ frequency: 528 });
 });
 
+elements.preset639?.addEventListener("click", () => {
+  currentFrequency = 639;
+  sendPatch({ frequency: 639 });
+});
+
 elements.resetButton?.addEventListener("click", () => {
   sendPatch({ frequency: A4_STANDARD_FREQUENCY });
 });
+
+// More frequencies dropdown
+elements.moreFrequenciesBtn?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  elements.moreFrequenciesMenu?.classList.toggle("show");
+});
+
+document.addEventListener("click", () => {
+  elements.moreFrequenciesMenu?.classList.remove("show");
+});
+
+elements.moreFrequenciesMenu
+  ?.querySelectorAll(".dropdown-item")
+  .forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const freq = parseInt(
+        (item as HTMLElement).dataset.freq ?? "",
+        10
+      );
+      if (!isNaN(freq)) {
+        currentFrequency = freq as Frequency;
+        sendPatch({ frequency: currentFrequency });
+        elements.moreFrequenciesMenu?.classList.remove("show");
+      }
+    });
+  });
 
 // Mode buttons
 elements.rateModeBtn?.addEventListener("click", () =>

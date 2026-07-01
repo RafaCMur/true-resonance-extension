@@ -149,13 +149,36 @@
           </button>
         </div>
 
-        <div class="preset-buttons">
-          <button id="pitch-432-btn" class="btn btn-outline preset-button" aria-pressed="false">
+        <div class="preset-grid">
+          <button id="pitch-396-btn" class="btn btn-outline preset-button" data-freq="396" aria-pressed="false">
+            396 Hz
+          </button>
+          <button id="pitch-432-btn" class="btn btn-outline preset-button" data-freq="432" aria-pressed="false">
             432 Hz
           </button>
-          <button id="pitch-528-btn" class="btn btn-outline preset-button" aria-pressed="false">
+          <button id="pitch-528-btn" class="btn btn-outline preset-button" data-freq="528" aria-pressed="false">
             528 Hz
           </button>
+          <button id="pitch-639-btn" class="btn btn-outline preset-button" data-freq="639" aria-pressed="false">
+            639 Hz
+          </button>
+        </div>
+
+        <div class="more-frequencies-dropdown">
+          <button class="btn btn-outline" id="moreFrequenciesBtn" type="button">
+            <span data-i18n="moreFrequencies">More frequencies</span>
+            <svg class="dropdown-arrow" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
+              <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2 4 L6 8 L10 4" />
+            </svg>
+          </button>
+          <div class="dropdown-menu" id="moreFrequenciesMenu">
+            <button class="dropdown-item" data-freq="174" aria-pressed="false">174 Hz</button>
+            <button class="dropdown-item" data-freq="285" aria-pressed="false">285 Hz</button>
+            <button class="dropdown-item" data-freq="415" aria-pressed="false">415 Hz</button>
+            <button class="dropdown-item" data-freq="741" aria-pressed="false">741 Hz</button>
+            <button class="dropdown-item" data-freq="852" aria-pressed="false">852 Hz</button>
+            <button class="dropdown-item" data-freq="963" aria-pressed="false">963 Hz</button>
+          </div>
         </div>
 
         <div class="reset-container">
