@@ -34,10 +34,6 @@ describe("computePitchRatio", () => {
     expect(computePitchRatio(s({ frequency: 528 }))).toBeCloseTo(expected, 10);
   });
 
-  it("C5 reference ratio is greater than 1", () => {
-    expect(computePitchRatio(s({ frequency: 528 }))).toBeGreaterThan(1.0);
-  });
-
   it("432 Hz ratio is less than 1", () => {
     expect(computePitchRatio(s({ frequency: 432 }))).toBeLessThan(1.0);
   });
