@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>True Resonance - About</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <title data-i18n="aboutTitle">True Resonance - About</title>
     <link rel="stylesheet" href="about.css" />
   </head>
   <body>
@@ -15,37 +11,38 @@
       <header>
         <img src="images/logo.svg" alt="True Resonance" class="logo" />
         <h1>True Resonance</h1>
-        <p>Play music in healing frequencies</p>
+        <p data-i18n="subtitle">Play music in healing frequencies</p>
       </header>
 
       <main>
         <section class="info-section">
-          <h2>Extension Information</h2>
+          <h2 data-i18n="aboutExtensionInfo">Extension Information</h2>
           <div class="info-grid">
             <div class="info-item">
-              <span>Name:</span>
+              <span data-i18n="aboutName">Name:</span>
               <span>True Resonance</span>
             </div>
 
             <div class="info-item">
-              <span>Version:</span>
+              <span data-i18n="aboutVersion">Version:</span>
               <span id="version">—</span>
             </div>
 
             <div class="info-item">
-              <span>Author:</span>
+              <span data-i18n="aboutAuthor">Author:</span>
               <span>RafaCMur</span>
             </div>
           </div>
         </section>
 
         <section class="links-section">
-          <h2>Links</h2>
+          <h2 data-i18n="aboutLinks">Links</h2>
           <div class="links">
             <a
               href="https://github.com/RafaCMur/true-resonance"
               target="_blank"
               class="link"
+              data-i18n="aboutGitHub"
             >
               GitHub Repository
             </a>
@@ -53,17 +50,17 @@
               href="https://www.paypal.com/donate/?hosted_button_id=TJYW36JX2NY48"
               target="_blank"
               class="link"
+              data-i18n="aboutDonate"
             >
               Support Development
             </a>
           </div>
-          <p class="contact">Questions? rafacmurdev@gmail.com</p>
+          <p class="contact" data-i18n="aboutContact">
+            Questions? rafacmurdev@gmail.com
+          </p>
         </section>
       </main>
     </div>
-    <script>
-      document.getElementById("version").textContent =
-        chrome.runtime.getManifest().version;
-    </script>
+    <script src="about.js"></script>
   </body>
 </html>

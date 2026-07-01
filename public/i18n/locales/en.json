@@ -21,5 +21,15 @@
   "resetLabel": "Reset all settings",
   "resetDesc": "Restore defaults",
   "reset": "Reset",
-  "dismissAnnouncement": "Dismiss"
+  "dismissAnnouncement": "Dismiss",
+  "aboutTitle": "True Resonance - About",
+  "aboutExtensionInfo": "Extension Information",
+  "aboutName": "Name:",
+  "aboutVersion": "Version:",
+  "aboutAuthor": "Author:",
+  "aboutLinks": "Links",
+  "aboutGitHub": "GitHub Repository",
+  "aboutDonate": "Support Development",
+  "aboutContact": "Questions? rafacmurdev@gmail.com",
+  "reloadPage": "Reload page to activate"
 }

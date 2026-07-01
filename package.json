@@ -1,6 +1,6 @@
 {
   "name": "true-resonance",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Play music in healing frequencies.",
   "main": "index.js",
   "type": "module",
@@ -27,13 +27,18 @@
     "clean": "rm -rf dist",
     "build": "webpack --config webpack.config.cjs",
     "watch": "webpack --watch --config webpack.config.cjs",
-    "release": "node scripts/release.cjs"
+    "release": "node scripts/release.cjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.326",
+    "@vitest/browser": "^4.1.9",
     "copy-webpack-plugin": "^13.0.0",
+    "happy-dom": "^20.10.6",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
+    "vitest": "^4.1.9",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1"
   },

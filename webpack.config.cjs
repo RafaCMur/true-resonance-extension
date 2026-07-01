@@ -10,6 +10,7 @@ module.exports = {
     injected: "./src/content/injected.ts",
     offscreen: "./src/offscreen/offscreen.ts",
     popup: "./src/popup/popup.ts",
+    about: "./src/about/about.ts",
   },
   output: {
     path: path.resolve(__dirname, "dist"),

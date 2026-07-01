@@ -149,40 +149,8 @@ function handleSetTabCapturePitch(): void {
     .catch(() => {});
 }
 
-async function injectIntoExistingTabs(): Promise<void> {
-  const tabs = await chrome.tabs.query({});
-  for (const tab of tabs) {
-    if (tab.id === undefined) continue;
-    const url = tab.url ?? "";
-    if (
-      url.startsWith("chrome://") ||
-      url.startsWith("edge://") ||
-      url.startsWith("about:") ||
-      url.startsWith("chrome-extension://")
-    ) {
-      continue;
-    }
-    try {
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id, allFrames: true },
-        files: ["injected.js"],
-        world: "MAIN",
-      });
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id, allFrames: true },
-        files: ["content_script.js"],
-      });
-    } catch {
-      // protected pages (Chrome Web Store, file://, etc.) — silently ignore
-    }
-  }
-}
-
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener(() => {
   initializeExtension();
-  if (details.reason === "install") {
-    void injectIntoExistingTabs();
-  }
 });
 
 chrome.tabs.onActivated.addListener(() => {
@@ -214,8 +182,31 @@ function setState(patch: Partial<GlobalState>) {
   }
 }
 
+const VALID_FREQUENCIES = new Set([432, 440, 528]);
+const VALID_MODES = new Set(["pitch", "rate"]);
+
+/**
+ * Validates a message patch before applying it to global state.
+ * Rejects non-objects, wrong-typed fields, and unknown keys.
+ */
+function isValidPatch(patch: unknown): patch is Partial<GlobalState> {
+  if (!patch || typeof patch !== "object") return false;
+  const p = patch as Record<string, unknown>;
+  if ("enabled" in p && typeof p.enabled !== "boolean") return false;
+  if ("mode" in p && (!p.mode || !VALID_MODES.has(p.mode as string)))
+    return false;
+  if ("frequency" in p && !VALID_FREQUENCIES.has(p.frequency as number))
+    return false;
+  const validKeys = ["enabled", "mode", "frequency"];
+  return Object.keys(p).every((k) => validKeys.includes(k));
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg.action === "set" && typeof msg.patch === "object") {
+  if (msg.action === "set") {
+    if (!isValidPatch(msg.patch)) {
+      sendResponse({ ok: false, error: "invalid patch" });
+      return;
+    }
     if (!_initialized) {
       _queue.push({ patch: msg.patch });
       sendResponse?.({ queued: true });

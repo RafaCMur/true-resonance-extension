@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## [2.3.0] - 2026-07-01
+
+### Added
+
+- **Test suite**: 52 test cases across 7 test files using Vitest. Covers constants, DRM detection, state machine, i18n, audio graph, message routing, and popup DOM integrity.
+- **Reload banner**: yellow banner in the popup when content scripts are not active on the current tab. Shows a refresh icon and "Reload page to activate" text. Clicking it reloads the tab. Hidden automatically on protected pages (chrome://, about:, etc.).
+- **About page i18n**: the about page now supports all 6 languages. It reads the language from storage and updates text dynamically.
+
+### Changed
+
+- **Messages hardened**: `postMessage` calls now use `window.location.origin` instead of `"*"`. Background service worker validates incoming state patches with a type guard.
+- **Accessibility improved**: added `aria-pressed`, `aria-label`, and `lang="en"` attributes. Hidden views get `inert` so keyboard focus does not reach them. All interactive elements have `:focus-visible` outlines. Added `prefers-reduced-motion` support.
+- **Inter font bundled locally**: the font is now loaded from the extension package instead of Google Fonts CDN. No external network requests for fonts.
+- **Permissions reduced**: removed `host_permissions` and `scripting` from manifest. Content scripts are injected only via declarative `content_scripts` in the manifest. The popup tells users to reload tabs manually when needed.
+
+### Removed
+
+- **Dead code**: deleted `soundtouch.ts`, `WORKLET_PATH` export, `calculatePlaybackRate()` and `shouldResetPlaybackRate()` from state.ts.
+
+### Fixed
+
+- **CSP inline-script bug in about.html**: moved inline JavaScript to an external bundle. The about page now works under the default Manifest V3 CSP without requiring a relaxed policy.
+
 ## [2.2.1] - 2026-06-26
 
 New version overriding old 2.2.0 already uploaded in the chrome web store

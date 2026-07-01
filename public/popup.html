@@ -1,14 +1,10 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>True Resonance</title>
     <script src="theme-preload.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="popup.css" />
   </head>
 
@@ -19,14 +15,14 @@
 
       <!-- Top Control Bar -->
       <div class="top-control-bar">
-        <button class="control-btn" id="powerToggle" title="Turn on/off">
+        <button class="control-btn" id="powerToggle" aria-label="Turn on/off" aria-pressed="false">
           <img src="images/power.svg" alt="Power" width="16" height="16" />
         </button>
         <div class="status-info">
           <span class="status-title">True Resonance</span>
           <span class="status-subtitle" id="statusSubtitle">Inactive</span>
         </div>
-        <button class="control-btn" id="settingsBtn" title="Settings">
+        <button class="control-btn" id="settingsBtn" aria-label="Settings">
           <img
             src="images/settings.svg"
             alt="Settings"
@@ -70,6 +66,26 @@
         </button>
       </div>
 
+      <button class="reload-banner" id="reloadBanner" type="button" hidden>
+        <svg
+          class="reload-icon"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="23 4 23 10 17 10" />
+          <polyline points="1 20 1 14 7 14" />
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+        </svg>
+        <span data-i18n="reloadPage">Reload page to activate</span>
+      </button>
+
       <div class="main-view" id="mainView">
         <header class="header-brand">
           <div class="brand-row">
@@ -87,6 +103,7 @@
             type="button"
             id="pitch-mode-btn"
             class="mode-button pitch-btn active"
+            aria-pressed="true"
           >
             <span data-i18n="pitchOnly">Pitch Only</span>
             <svg
@@ -108,7 +125,7 @@
               but the audio can sound slightly less clean.
             </span>
           </button>
-          <button type="button" id="rate-mode-btn" class="mode-button rate-btn">
+          <button type="button" id="rate-mode-btn" class="mode-button rate-btn" aria-pressed="false">
             <span data-i18n="speedPitch">Speed & Pitch</span>
             <svg
               class="mode-icon"
@@ -133,10 +150,10 @@
         </div>
 
         <div class="preset-buttons">
-          <button id="pitch-432-btn" class="btn btn-outline preset-button">
+          <button id="pitch-432-btn" class="btn btn-outline preset-button" aria-pressed="false">
             432 Hz
           </button>
-          <button id="pitch-528-btn" class="btn btn-outline preset-button">
+          <button id="pitch-528-btn" class="btn btn-outline preset-button" aria-pressed="false">
             528 Hz
           </button>
         </div>
@@ -159,6 +176,7 @@
               href="https://github.com/RafaCMur/true-resonance"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Contribute (opens in new tab)"
             >
               <span data-i18n="contribute">Contribute</span>
             </a>
@@ -168,6 +186,7 @@
               href="https://www.paypal.com/donate/?hosted_button_id=TJYW36JX2NY48"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Donate (opens in new tab)"
             >
               <span data-i18n="donate">Donate</span>
             </a>
@@ -216,7 +235,7 @@
               </span>
             </div>
             <div class="segment-control theme-segment" id="themeSegment">
-              <button class="segment-btn" data-theme="light" title="Light">
+              <button class="segment-btn" data-theme="light" aria-label="Light theme" aria-pressed="false">
                 <img
                   src="images/theme-light.svg"
                   alt="Light"
@@ -224,7 +243,7 @@
                   height="14"
                 />
               </button>
-              <button class="segment-btn" data-theme="system" title="System">
+              <button class="segment-btn" data-theme="system" aria-label="System theme" aria-pressed="true">
                 <img
                   src="images/theme-auto.svg"
                   alt="System"
@@ -232,7 +251,7 @@
                   height="14"
                 />
               </button>
-              <button class="segment-btn" data-theme="dark" title="Dark">
+              <button class="segment-btn" data-theme="dark" aria-label="Dark theme" aria-pressed="false">
                 <img
                   src="images/theme-dark.svg"
                   alt="Dark"
@@ -251,17 +270,17 @@
               <button
                 class="control-btn language-btn"
                 id="languageBtn"
-                title="Language"
+                aria-label="Select language"
               >
                 EN
               </button>
               <div class="dropdown-menu" id="languageMenu">
-                <button class="dropdown-item active" data-lang="en">EN</button>
-                <button class="dropdown-item" data-lang="es">ES</button>
-                <button class="dropdown-item" data-lang="pt">PT</button>
-                <button class="dropdown-item" data-lang="fr">FR</button>
-                <button class="dropdown-item" data-lang="de">DE</button>
-                <button class="dropdown-item" data-lang="it">IT</button>
+                <button class="dropdown-item active" data-lang="en" aria-pressed="true">EN</button>
+                <button class="dropdown-item" data-lang="es" aria-pressed="false">ES</button>
+                <button class="dropdown-item" data-lang="pt" aria-pressed="false">PT</button>
+                <button class="dropdown-item" data-lang="fr" aria-pressed="false">FR</button>
+                <button class="dropdown-item" data-lang="de" aria-pressed="false">DE</button>
+                <button class="dropdown-item" data-lang="it" aria-pressed="false">IT</button>
               </div>
             </div>
           </div>

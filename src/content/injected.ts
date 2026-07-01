@@ -1,5 +1,6 @@
 import { loadWorklet, applyPitch } from "./audio-graph";
 import type { Algorithm } from "./audio-graph";
+import { isDRMHost } from "../shared/drm";
 
 const IDEMPOTENCY_KEY = "__trueResonance_injected";
 
@@ -22,17 +23,6 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
 
   let config: InjectedConfig | null = null;
   let baseUrl = "";
-
-  const DRM_HOST_PATTERNS = [
-    { host: "open.spotify.com", label: "Spotify" },
-    { host: "netflix.com", label: "Netflix" },
-  ];
-
-  function isDRMHost(hostname: string): boolean {
-    return DRM_HOST_PATTERNS.some(
-      (p) => hostname === p.host || hostname.endsWith("." + p.host),
-    );
-  }
 
   let tier2Requested = false;
 
@@ -185,7 +175,7 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
           reason: "DRM_HOST",
           host: window.location.hostname,
         },
-        "*",
+        window.location.origin,
       );
       return;
     }
@@ -233,7 +223,7 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
           tier2Requested = true;
           window.postMessage(
             { source: SOURCE_INJECTED, type: "NEEDS_TIER2", reason: "CORS" },
-            "*",
+            window.location.origin,
           );
         }
         return;
@@ -363,6 +353,7 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
 
   window.addEventListener("message", (event) => {
     if (event.source !== window) return;
+    if (event.origin !== window.location.origin) return;
 
     const data = event.data as
       | {

@@ -20,7 +20,7 @@ function sendConfig(state: GlobalState): void {
       },
       baseUrl: chrome.runtime.getURL(""),
     },
-    "*",
+    window.location.origin,
   );
 }
 
@@ -34,6 +34,7 @@ chrome.storage.onChanged.addListener(({ state }) => {
 
 window.addEventListener("message", (event) => {
   if (event.source !== window) return;
+  if (event.origin !== window.location.origin) return;
   if (window.self !== window.top) return;
 
   const data = event.data as
@@ -56,7 +57,7 @@ chrome.runtime.onMessage.addListener((message) => {
   if (message?.action === "stopTabCapture") {
     window.postMessage(
       { source: SOURCE_CONTENT, type: "STOP_TIER2" },
-      "*",
+      window.location.origin,
     );
   }
 });
