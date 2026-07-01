@@ -19,6 +19,10 @@ export function getReferenceFreq(frequency: number): number {
   return SOLFEGGIO_REFERENCE[frequency] ?? A4_STANDARD_FREQUENCY;
 }
 
+export function ratioFor(frequency: number): number {
+  return frequency / getReferenceFreq(frequency);
+}
+
 export function computePitchRatio(s: GlobalState): number {
-  return s.frequency / getReferenceFreq(s.frequency);
+  return ratioFor(s.frequency);
 }

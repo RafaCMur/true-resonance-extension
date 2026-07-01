@@ -1,4 +1,4 @@
-import { A4_STANDARD_FREQUENCY, getReferenceFreq } from "../shared/constants";
+import { A4_STANDARD_FREQUENCY, ratioFor } from "../shared/constants";
 import { Frequency, Mode } from "../shared/types";
 
 let _currentPlaybackRate = 1;
@@ -8,7 +8,7 @@ let _targetFrequency: Frequency = A4_STANDARD_FREQUENCY;
 let _mode: Mode = "pitch";
 
 export function recalculateFactors() {
-  const factor = _targetFrequency / getReferenceFreq(_targetFrequency);
+  const factor = ratioFor(_targetFrequency);
   if (_mode === "rate") {
     _currentPitch = 1;
     _currentPlaybackRate = factor;

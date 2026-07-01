@@ -20,6 +20,7 @@ export function applyPitch(
   ratio: number,
   currentTime: number,
 ): void {
+  // TODO: Add Signalsmith algorithm support (v2.4.0)
   if (algorithm === "soundtouch") {
     node.parameters.get("pitch")!.setValueAtTime(ratio, currentTime);
   }
