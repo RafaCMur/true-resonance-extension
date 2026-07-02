@@ -8,21 +8,20 @@
 - **Support links moved to Settings**: Contribute and Donate buttons now live in a "Support" row inside Settings instead of the main view.
 - **"Show More Options" renamed to "Show More Frequencies"** across all 6 languages. Makes the button purpose clearer.
 - **About page links redesigned**: GitHub, Contribute, and Donate now have SVGs, matching the popup button style.
+- **Extension name and description updated**: clearer wording for the Chrome Web Store listing.
+- **CSS refactoring with variables**: popup dimensions, control sizes, and focus rings now use CSS custom properties (`--popup-max-height`, `--control-size`, etc.) for easier maintenance.
+- **Dark theme color adjustments**: darker background (`#0b0f19`), removed shadows for a flatter look, added hover states for cards and borders.
+- **Performance improvements**: replaced `transition: all` with specific properties (`transform`, `box-shadow`, `opacity`) to reduce repaints.
+- **Theme-aware hover states**: using `color-mix()` for button hovers so they automatically adapt to light/dark themes.
 
 ### Fixed
 
+- **Chrome popup auto-resize oscillation**: added a fixed-height scrollbar (6px width) to prevent the popup from flickering when content length changes. The popup now caps at 600px height with smooth scrolling when content is long.
+- **Disabled state z-index issues**: tooltips and dropdowns are now hidden when the extension is disabled. Overlay z-index raised to 200, top control bar to 300, ensuring proper layering.
 - **Dark mode contrast**: popup dark colors were too bright and hard to read. Background, card, and border colors now match the design from the about page. Shadows removed in dark mode for a flatter look.
 - **Dark mode on the About page**: about.html had no dark theme at all. Added CSS variables and a `data-theme="dark"` block so it matches the rest of the extension.
 - **Control button hover was showing the wrong color**: the power and settings icons used `<img>` elements with complex CSS filters. Switched to inline SVGs with `currentColor` — hover now fades smoothly to purple instead of flashing light blue.
 - **i18n textContent bug**: putting `data-i18n` directly on `<a>` tags wiped their SVG children when translations loaded. Moved the attribute to an inner `<span>` so icons stay visible after language switch.
-
-### Changed
-
-- **Frequency buttons layout**: 432 Hz and 528 Hz are now the primary visible buttons. 396 Hz and 639 Hz moved into the toggleable secondary frequencies grid alongside 174, 285, 415, 741, 852, and 963 Hz.
-
-### Fixed
-
-- **Rate mode interfering when extension is OFF**: the content script event handlers (`ratechange`, `playing`, `play`, `loadstart`) now check `config.enabled` before acting. When the extension is disabled, it no longer overrides video playback speed, allowing users to change speed via native player controls (YouTube, Udemy, Coursera, etc.) as expected.
 
 ## [2.3.0] - 2026-07-01
 

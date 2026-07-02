@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "True Resonance - 432Hz audio retuner",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "minimum_chrome_version": "116",
   "description": "Retune Spotify, YouTube, Apple Music & any web audio to 432Hz, 528Hz & Solfeggio healing frequencies - in real time.",
   "author": "RafaCMur",
