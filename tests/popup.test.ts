@@ -22,10 +22,10 @@ function setupPopupDOM(): void {
         <button id="backFromSettings"></button>
         <button id="openAboutBtn"></button>
         <button id="resetAllBtn"></button>
-        <button id="languageBtn">EN</button>
+        <button id="languageBtn">English</button>
         <div id="languageMenu" class="dropdown">
-          <div class="dropdown-item" data-lang="en"></div>
-          <div class="dropdown-item" data-lang="es"></div>
+          <div class="dropdown-item" data-lang="en">English</div>
+          <div class="dropdown-item" data-lang="es">Español</div>
         </div>
         <div id="themeSegment">
           <button class="segment-btn" data-theme="light"></button>
@@ -64,9 +64,15 @@ describe("popup", () => {
               speedPitch: "Speed & Pitch",
               resetButton: "Reset",
               footerText: "Footer",
+              footerQuestions: "Questions?",
+              footerReview: "Leave a review",
+              footerOpenSource: "Open source",
               contribute: "Contribute",
               donate: "Donate",
               questions: "Questions",
+              supportLabel: "Support",
+              supportDesc: "Support desc",
+              aboutContribute: "Contribute",
               tooltipPitchOnly: "Tooltip Pitch",
               tooltipSpeedPitch: "Tooltip Speed",
               spotifyBanner: "Spotify Banner",

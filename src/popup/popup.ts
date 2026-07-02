@@ -81,6 +81,14 @@ function updateUI(state: GlobalState) {
   elements.disabledOverlay?.classList.toggle("show", !enabled);
   elements.appContainer?.classList.toggle("disabled", !enabled);
 
+  if (!enabled) {
+    elements.languageMenu?.classList.remove("show");
+    elements.secondaryFreqGrid?.classList.add("hidden");
+    elements.toggleMoreFreqs?.setAttribute("aria-expanded", "false");
+    const labelSpan = elements.toggleMoreFreqs?.querySelector("[data-i18n]");
+    if (labelSpan) labelSpan.setAttribute("data-i18n", "showMoreOptions");
+  }
+
   // Update toggles
   elements.powerToggle?.classList.toggle("active", enabled);
 
@@ -149,6 +157,7 @@ function switchView(view: "main" | "settings"): void {
     elements.mainView?.removeAttribute("inert");
     elements.appContainer?.setAttribute("data-view", "main");
   }
+  window.scrollTo(0, 0);
 }
 
 // ======================== THEME MANAGEMENT ========================
@@ -363,6 +372,7 @@ elements.themeSegment?.querySelectorAll(".segment-btn").forEach((btn) => {
 if (elements.languageBtn && elements.languageMenu) {
   elements.languageBtn.addEventListener("click", (e) => {
     e.stopPropagation();
+    if (elements.appContainer?.classList.contains("disabled")) return;
     elements.languageMenu.classList.toggle("show");
   });
 
@@ -439,6 +449,7 @@ elements.resetButton?.addEventListener("click", () => {
 
 // Toggle more frequencies
 elements.toggleMoreFreqs?.addEventListener("click", () => {
+  if (elements.appContainer?.classList.contains("disabled")) return;
   const isExpanded = elements.toggleMoreFreqs.getAttribute("aria-expanded") === "true";
   elements.toggleMoreFreqs.setAttribute("aria-expanded", String(!isExpanded));
   elements.secondaryFreqGrid?.classList.toggle("hidden");

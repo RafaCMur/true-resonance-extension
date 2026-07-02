@@ -20,6 +20,29 @@
     src: url('fonts/inter/inter-latin.woff2') format('woff2');
 }
 
+:root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --background: #f8fafc;
+    --card-bg: #ffffff;
+    --text-color: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    --radius: 8px;
+}
+
+[data-theme="dark"] {
+    --primary-color: #818cf8;
+    --primary-hover: #6366f1;
+    --background: #0b0f19;
+    --card-bg: #1a2332;
+    --text-color: #f1f5f9;
+    --text-secondary: #8899a9;
+    --border-color: #2d3748;
+    --shadow: none;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -28,8 +51,8 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: #f8fafc;
-    color: #1e293b;
+    background: var(--background);
+    color: var(--text-color);
     line-height: 1.6;
 }
 
@@ -37,16 +60,16 @@ body {
     max-width: 600px;
     margin: 0 auto;
     padding: 2rem;
-    background: white;
+    background: var(--card-bg);
     min-height: 100vh;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 header {
     text-align: center;
     margin-bottom: 3rem;
     padding-bottom: 2rem;
-    border-bottom: 2px solid #6366f1;
+    border-bottom: 2px solid var(--primary-color);
 }
 
 .logo {
@@ -58,12 +81,12 @@ header {
 h1 {
     font-size: 2rem;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-color);
     margin-bottom: 0.5rem;
 }
 
 header p {
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 1.1rem;
 }
 
@@ -75,7 +98,7 @@ h2 {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #1e293b;
+    color: var(--text-color);
 }
 
 .info-grid {
@@ -88,18 +111,18 @@ h2 {
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem;
-    background: #f8fafc;
-    border-radius: 0.5rem;
-    border: 1px solid #e2e8f0;
+    background: var(--background);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
 }
 
 .info-item span:first-child {
-    color: #64748b;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
 .info-item span:last-child {
-    color: #1e293b;
+    color: var(--text-color);
     font-weight: 600;
 }
 
@@ -108,7 +131,7 @@ h2 {
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
+    border-radius: var(--radius);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -121,38 +144,50 @@ h2 {
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-.links {
-    display: grid;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+.links-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .link {
-    display: block;
-    padding: 0.75rem 1rem;
-    background: #6366f1;
-    color: white;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    transition: all 0.2s;
-    text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.link-half {
+  flex: 1;
+}
+
+.link-full {
+  display: flex;
+  margin-bottom: 1.5rem;
 }
 
 .link:hover {
-    background: #5855eb;
+    background: var(--primary-hover);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .contact {
     text-align: center;
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 0.9rem;
     padding: 1rem;
-    background: #f8fafc;
-    border-radius: 0.5rem;
-    border: 1px solid #e2e8f0;
+    background: var(--background);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
 }
 
 @media (max-width: 640px) {
@@ -161,11 +196,11 @@ h2 {
         margin: 0;
         box-shadow: none;
     }
-    
+
     h1 {
         font-size: 1.5rem;
     }
-    
+
     .info-item {
         flex-direction: column;
         gap: 0.25rem;
@@ -174,7 +209,7 @@ h2 {
 }
 
 :focus-visible {
-    outline: 2px solid #6366f1;
+    outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
 

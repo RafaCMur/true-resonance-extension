@@ -1,6 +1,20 @@
 # CHANGELOG
 
-## [2.4.0] - 2026-07-02
+## [2.5.0] - 2026-07-02
+
+### Changed
+
+- **Footer redesigned**: three icon + text lines (questions, review, open source) replace the old button row. Cleaner look at the bottom of the popup.
+- **Support links moved to Settings**: Contribute and Donate buttons now live in a "Support" row inside Settings instead of the main view.
+- **"Show More Options" renamed to "Show More Frequencies"** across all 6 languages. Makes the button purpose clearer.
+- **About page links redesigned**: GitHub, Contribute, and Donate now have SVGs, matching the popup button style.
+
+### Fixed
+
+- **Dark mode contrast**: popup dark colors were too bright and hard to read. Background, card, and border colors now match the design from the about page. Shadows removed in dark mode for a flatter look.
+- **Dark mode on the About page**: about.html had no dark theme at all. Added CSS variables and a `data-theme="dark"` block so it matches the rest of the extension.
+- **Control button hover was showing the wrong color**: the power and settings icons used `<img>` elements with complex CSS filters. Switched to inline SVGs with `currentColor` — hover now fades smoothly to purple instead of flashing light blue.
+- **i18n textContent bug**: putting `data-i18n` directly on `<a>` tags wiped their SVG children when translations loaded. Moved the attribute to an inner `<span>` so icons stay visible after language switch.
 
 ### Changed
 
