@@ -103,6 +103,13 @@
 }
 /* ========================================== */
 
+html,
+body {
+  height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 body {
   font-family:
     "Inter",
@@ -118,9 +125,24 @@ body {
   background: var(--background);
   color: var(--text-color);
   line-height: 1.5;
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease;
+}
+
+/* Fixed-height scrollbar avoids Chrome popup auto-resize oscillation */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.55);
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
 }
 
 .app-container {
@@ -141,7 +163,7 @@ body {
   background: rgba(100, 100, 100, 0.1);
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
   z-index: 200;
 }
