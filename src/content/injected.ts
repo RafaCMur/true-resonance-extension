@@ -149,7 +149,7 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
   let activeCtx: CustomAudioContext | null = null;
 
   function reapplyConfig(media: HTMLMediaElement): void {
-    if (!config) return;
+    if (!config || !config.enabled) return;
     if (config.mode === "rate") {
       if (media.playbackRate !== config.playbackRate) {
         media.playbackRate = config.playbackRate;
@@ -160,7 +160,7 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
   }
 
   async function onMediaPlaying(media: HTMLMediaElement): Promise<void> {
-    if (!config) return;
+    if (!config || !config.enabled) return;
 
     if (
       isDRMHost(window.location.hostname) &&
