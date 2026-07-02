@@ -5,9 +5,15 @@
   "speedPitch": "Tempo",
   "resetButton": "Auf 440 Hz zurücksetzen",
   "footerText": "Kostenlos für alle. Unterstützen Sie uns!",
+  "footerQuestions": "Fragen?",
+  "footerReview": "Gefällt dir True Resonance? Bewerte uns →",
+  "footerOpenSource": "Open Source und kostenlos für alle",
   "contribute": "Beitragen",
   "donate": "Spenden",
   "questions": "Fragen?",
+  "supportLabel": "Unterstützen",
+  "supportDesc": "Beitragen oder spenden",
+  "aboutContribute": "Beitragen",
   "tooltipPitchOnly": "Ändert nur die Tonhöhe bei ursprünglicher Geschwindigkeit",
   "tooltipSpeedPitch": "Ändert sowohl Tonhöhe als auch Wiedergabegeschwindigkeit",
   "spotifyBanner": "Spotify-Unterstützung ist da!",
@@ -32,6 +38,6 @@
   "aboutDonate": "Entwicklung unterstützen",
   "aboutContact": "Fragen? rafacmurdev@gmail.com",
   "reloadPage": "Seite neu laden zum Aktivieren",
-  "showMoreOptions": "Mehr Optionen anzeigen",
-  "showLessOptions": "Weniger Optionen anzeigen"
+  "showMoreOptions": "Mehr Frequenzen anzeigen",
+  "showLessOptions": "Weniger Frequenzen anzeigen"
 }

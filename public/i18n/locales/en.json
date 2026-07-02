@@ -5,9 +5,15 @@
   "speedPitch": "Speed & Pitch",
   "resetButton": "Reset to 440 Hz",
   "footerText": "Free for everyone. Support us!",
+  "footerQuestions": "Questions?",
+  "footerReview": "Enjoying True Resonance? Rate us →",
+  "footerOpenSource": "Open source & free for everyone",
   "contribute": "Contribute",
   "donate": "Donate",
   "questions": "Questions?",
+  "supportLabel": "Support",
+  "supportDesc": "Contribute or donate",
+  "aboutContribute": "Contribute",
   "tooltipPitchOnly": "Changes only pitch while maintaining original speed",
   "tooltipSpeedPitch": "Changes both pitch and playback speed",
   "spotifyBanner": "Spotify support is here!",
@@ -32,6 +38,6 @@
   "aboutDonate": "Support Development",
   "aboutContact": "Questions? rafacmurdev@gmail.com",
   "reloadPage": "Reload page to activate",
-  "showMoreOptions": "Show More Options",
-  "showLessOptions": "Show Less Options"
+  "showMoreOptions": "Show More Frequencies",
+  "showLessOptions": "Show Less Frequencies"
 }

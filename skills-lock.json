@@ -11,6 +11,12 @@
       "sourceType": "autoskills-registry",
       "computedHash": "6c561d2efc102fa5b7447cc85285f95676ec12868e69eabafc7189b107a84b93"
     },
+    "css": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "skillPath": "css/SKILL.md",
+      "computedHash": "80c477418be4bdd2d102ba5a71760125a9c1925292f5b3c208ee56ab9e6e3cc2"
+    },
     "frontend-design": {
       "source": "anthropics/skills",
       "sourceType": "autoskills-registry",

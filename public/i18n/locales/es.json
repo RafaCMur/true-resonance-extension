@@ -5,9 +5,15 @@
   "speedPitch": "Velocidad",
   "resetButton": "Restablecer a 440 Hz",
   "footerText": "Gratis para todos. ¡Apóyanos!",
+  "footerQuestions": "¿Preguntas?",
+  "footerReview": "¿Disfrutas True Resonance? Califícanos →",
+  "footerOpenSource": "Código abierto y gratuito para todos",
   "contribute": "Contribuir",
   "donate": "Donar",
   "questions": "¿Preguntas?",
+  "supportLabel": "Apoyar",
+  "supportDesc": "Contribuir o donar",
+  "aboutContribute": "Contribuir",
   "tooltipPitchOnly": "Cambia solo el tono manteniendo la velocidad original",
   "tooltipSpeedPitch": "Cambia tanto el tono como la velocidad de reproducción",
   "spotifyBanner": "Spotify ya está aquí!",
@@ -32,6 +38,6 @@
   "aboutDonate": "Apoyar el desarrollo",
   "aboutContact": "¿Preguntas? rafacmurdev@gmail.com",
   "reloadPage": "Recarga la página para activar",
-  "showMoreOptions": "Mostrar Más Opciones",
-  "showLessOptions": "Mostrar Menos Opciones"
+  "showMoreOptions": "Mostrar más frecuencias",
+  "showLessOptions": "Mostrar menos frecuencias"
 }
