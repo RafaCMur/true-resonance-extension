@@ -31,5 +31,7 @@
   "aboutGitHub": "Repositório GitHub",
   "aboutDonate": "Apoiar o desenvolvimento",
   "aboutContact": "Dúvidas? rafacmurdev@gmail.com",
-  "reloadPage": "Recarregue a página para ativar"
+  "reloadPage": "Recarregue a página para ativar",
+  "showMoreOptions": "Mostrar mais opções",
+  "showLessOptions": "Mostrar menos opções"
 }

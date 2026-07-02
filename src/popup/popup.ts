@@ -36,8 +36,11 @@ const elements = {
   rateModeBtn: document.getElementById("rate-mode-btn") as HTMLButtonElement,
 
   // Presets
-  preset432: document.getElementById("pitch-432-btn") as HTMLButtonElement,
-  preset528: document.getElementById("pitch-528-btn") as HTMLButtonElement,
+  presetGrid: document.querySelector(".preset-grid") as HTMLElement,
+
+  // Toggle more frequencies
+  toggleMoreFreqs: document.getElementById("toggleMoreFreqs") as HTMLButtonElement,
+  secondaryFreqGrid: document.getElementById("secondaryFreqGrid") as HTMLElement,
 
   // Announcement banner
   announcementBanner: document.querySelector(
@@ -87,15 +90,16 @@ function updateUI(state: GlobalState) {
 
   // Update frequency
   currentFrequency = frequency;
-  elements.preset432?.classList.toggle("active", frequency === 432);
-  elements.preset528?.classList.toggle("active", frequency === 528);
+  document.querySelectorAll("[data-freq]").forEach((btn) => {
+    const freq = parseInt((btn as HTMLElement).dataset.freq ?? "", 10);
+    btn.classList.toggle("active", freq === frequency);
+    btn.setAttribute("aria-pressed", String(freq === frequency));
+  });
 
   // ARIA pressed states
   elements.powerToggle?.setAttribute("aria-pressed", String(enabled));
   elements.pitchModeBtn?.setAttribute("aria-pressed", String(mode === "pitch"));
   elements.rateModeBtn?.setAttribute("aria-pressed", String(mode === "rate"));
-  elements.preset432?.setAttribute("aria-pressed", String(frequency === 432));
-  elements.preset528?.setAttribute("aria-pressed", String(frequency === 528));
 
   // Update status
   updateStatusUI(state);
@@ -407,7 +411,6 @@ elements.resetAllBtn?.addEventListener("click", () => {
   chrome.storage.local.remove("language");
   chrome.storage.local.remove("dismissedAnnouncement");
   localStorage.removeItem("theme");
-  sendPatch({ enabled: false, mode: "pitch", frequency: A4_STANDARD_FREQUENCY });
   window.location.reload();
 });
 
@@ -420,18 +423,40 @@ elements.reloadBanner?.addEventListener("click", async () => {
 });
 
 // Frequency controls
-elements.preset432?.addEventListener("click", () => {
-  currentFrequency = 432;
-  sendPatch({ frequency: 432 });
-});
-
-elements.preset528?.addEventListener("click", () => {
-  currentFrequency = 528;
-  sendPatch({ frequency: 528 });
+elements.presetGrid?.querySelectorAll("[data-freq]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const freq = parseInt((btn as HTMLElement).dataset.freq ?? "", 10);
+    if (!isNaN(freq)) {
+      currentFrequency = freq as Frequency;
+      sendPatch({ frequency: currentFrequency });
+    }
+  });
 });
 
 elements.resetButton?.addEventListener("click", () => {
   sendPatch({ frequency: A4_STANDARD_FREQUENCY });
+});
+
+// Toggle more frequencies
+elements.toggleMoreFreqs?.addEventListener("click", () => {
+  const isExpanded = elements.toggleMoreFreqs.getAttribute("aria-expanded") === "true";
+  elements.toggleMoreFreqs.setAttribute("aria-expanded", String(!isExpanded));
+  elements.secondaryFreqGrid?.classList.toggle("hidden");
+  const label = isExpanded ? "showMoreOptions" : "showLessOptions";
+  const span = elements.toggleMoreFreqs.querySelector("[data-i18n]");
+  if (span) span.setAttribute("data-i18n", label);
+  updateLanguageUI();
+});
+
+// Secondary frequency buttons (event delegation)
+elements.secondaryFreqGrid?.querySelectorAll("[data-freq]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const freq = parseInt((btn as HTMLElement).dataset.freq ?? "", 10);
+    if (!isNaN(freq)) {
+      currentFrequency = freq as Frequency;
+      sendPatch({ frequency: currentFrequency });
+    }
+  });
 });
 
 // Mode buttons

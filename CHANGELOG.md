@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [2.4.0] - 2026-07-02
+
+### Changed
+
+- **Frequency buttons layout**: 432 Hz and 528 Hz are now the primary visible buttons. 396 Hz and 639 Hz moved into the toggleable secondary frequencies grid alongside 174, 285, 415, 741, 852, and 963 Hz.
+
+### Fixed
+
+- **Rate mode interfering when extension is OFF**: the content script event handlers (`ratechange`, `playing`, `play`, `loadstart`) now check `config.enabled` before acting. When the extension is disabled, it no longer overrides video playback speed, allowing users to change speed via native player controls (YouTube, Udemy, Coursera, etc.) as expected.
+
 ## [2.3.0] - 2026-07-01
 
 ### Added

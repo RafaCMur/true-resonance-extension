@@ -608,14 +608,45 @@ input:checked + .toggle-slider:before {
   box-shadow: 0 3px 8px rgba(99, 102, 241, 0.4);
 }
 
-.preset-buttons {
-  display: flex;
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
   margin-bottom: var(--spacing);
 }
 
 .preset-button {
-  flex: 1;
+  /* flex: 1; removed — grid handles sizing */
+}
+
+/* ====================== TOGGLE MORE FREQUENCIES ====================== */
+.toggle-more-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing);
+}
+
+.toggle-arrow {
+  transition: transform 0.2s ease;
+}
+
+.toggle-more-btn[aria-expanded="true"] .toggle-arrow {
+  transform: rotate(180deg);
+}
+
+.secondary-frequencies {
+  margin-bottom: var(--spacing);
+}
+
+.secondary-frequencies.hidden {
+  display: none;
 }
 
 .preset-button.active {

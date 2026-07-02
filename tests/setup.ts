@@ -126,10 +126,6 @@ const chromeMock = {
     hasDocument: vi.fn(() => Promise.resolve(true)),
     createDocument: vi.fn(() => Promise.resolve()),
   },
-
-  scripting: {
-    executeScript: vi.fn(() => Promise.resolve()),
-  },
 };
 
 vi.stubGlobal("chrome", chromeMock);
