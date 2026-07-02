@@ -38,6 +38,12 @@
   --radius: 10px;
   --radius-sm: 6px;
   --spacing: 1.25rem;
+  --popup-max-height: 600px;
+  --popup-min-width: 320px;
+  --popup-max-width: 380px;
+  --control-size: 32px;
+  --focus-ring: 2px solid var(--primary-color);
+  --focus-ring-offset: 2px;
 }
 
 /* Dark Theme */
@@ -67,7 +73,7 @@
   font-size: 0.875rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: none;
   letter-spacing: 0.025em;
 }
@@ -96,8 +102,8 @@
 }
 
 .btn-outline:hover {
-  border-color: rgba(99, 102, 241, 0.3);
-  background-color: rgba(99, 102, 241, 0.05);
+  border-color: color-mix(in srgb, var(--primary-color) 30%, transparent);
+  background-color: color-mix(in srgb, var(--primary-color) 5%, transparent);
   transform: scale(1.02);
   box-shadow: var(--shadow-sm);
 }
@@ -105,7 +111,8 @@
 
 html,
 body {
-  height: 600px;
+  max-height: var(--popup-max-height);
+  height: auto;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -119,7 +126,7 @@ body {
     Roboto,
     Oxygen,
     sans-serif;
-  min-width: 320px;
+  min-width: var(--popup-min-width);
   margin: 0;
   padding: 0;
   background: var(--background);
@@ -148,7 +155,7 @@ body {
 .app-container {
   padding: var(--spacing);
   box-sizing: border-box;
-  max-width: 380px;
+  max-width: var(--popup-max-width);
   margin: 0 auto;
   position: relative;
 }
@@ -256,21 +263,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: none;
+  width: var(--control-size);
+  height: var(--control-size);
   border-radius: var(--radius-sm);
   background: transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
   font-size: 14px;
   color: var(--text-light);
   border: 1px solid transparent;
 }
 
 .control-btn:hover {
-  background: rgba(99, 102, 241, 0.08);
-  border-color: rgba(99, 102, 241, 0.2);
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  border-color: color-mix(in srgb, var(--primary-color) 20%, transparent);
   color: var(--primary-color);
   transform: scale(1.05);
 }
@@ -283,12 +289,12 @@ body {
   );
   color: white;
   border-color: var(--primary-color);
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--primary-color) 30%, transparent);
 }
 
 #powerToggle.active:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--primary-color) 40%, transparent);
 }
 
 .control-btn svg {
@@ -324,7 +330,7 @@ body {
 .language-btn {
   font-weight: 600;
   font-size: 11px;
-  min-width: 32px;
+  min-width: var(--control-size);
   letter-spacing: 0.5px;
 }
 
@@ -423,7 +429,7 @@ body {
   font-weight: 600;
   color: var(--text-color);
   background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 100%);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 20%, transparent);
   text-align: center;
   line-height: 1.35;
   display: flex;
@@ -434,7 +440,7 @@ body {
   overflow: hidden;
   max-height: 60px;
   box-shadow:
-    0 4px 14px rgba(99, 102, 241, 0.1),
+    0 4px 14px color-mix(in srgb, var(--primary-color) 10%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   animation: bannerSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   transition:
@@ -465,7 +471,7 @@ body {
 .announcement-icon {
   flex-shrink: 0;
   color: var(--primary-color);
-  filter: drop-shadow(0 1px 2px rgba(99, 102, 241, 0.25));
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--primary-color) 25%, transparent));
 }
 
 .announcement-text {
@@ -495,18 +501,13 @@ body {
 }
 
 .announcement-dismiss:hover {
-  background: rgba(99, 102, 241, 0.12);
+  background: color-mix(in srgb, var(--primary-color) 12%, transparent);
   color: var(--text-color);
   transform: scale(1.08);
 }
 
 .announcement-dismiss:active {
   transform: scale(0.92);
-}
-
-.announcement-dismiss:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
 }
 
 /* Dismissed state — collapses the banner out of layout */
@@ -531,7 +532,7 @@ body {
   border-color: rgba(129, 140, 248, 0.3);
   color: var(--text-color);
   box-shadow:
-    0 4px 18px rgba(99, 102, 241, 0.15),
+    0 4px 18px color-mix(in srgb, var(--primary-color) 15%, transparent),
     inset 0 1px 0 rgba(167, 139, 250, 0.08);
 }
 
@@ -569,12 +570,12 @@ body {
 .logo {
   width: 2.25rem;
   height: 2.25rem;
-  filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.15));
+  filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--primary-color) 15%, transparent));
   transition: filter 0.2s ease;
 }
 
 .logo:hover {
-  filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.25));
+  filter: drop-shadow(0 4px 8px color-mix(in srgb, var(--primary-color) 25%, transparent));
 }
 
 .title {
@@ -595,7 +596,7 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .toggle-container:hover {
@@ -630,7 +631,7 @@ body {
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg, #cbd5e1, #94a3b8);
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
   border-radius: 34px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -643,7 +644,7 @@ body {
   left: 3px;
   bottom: 3px;
   background: linear-gradient(135deg, #ffffff, #f8fafc);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
@@ -656,12 +657,12 @@ input:checked + .toggle-slider {
   );
   box-shadow:
     inset 0 1px 3px rgba(0, 0, 0, 0.1),
-    0 0 15px rgba(99, 102, 241, 0.3);
+    0 0 15px color-mix(in srgb, var(--primary-color) 30%, transparent);
 }
 
 input:checked + .toggle-slider:before {
   transform: translateX(24px);
-  box-shadow: 0 3px 8px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--primary-color) 40%, transparent);
 }
 
 .preset-grid {
@@ -697,10 +698,6 @@ input:checked + .toggle-slider:before {
   margin-bottom: var(--spacing);
 }
 
-.secondary-frequencies.hidden {
-  display: none;
-}
-
 .preset-button.active {
   background: linear-gradient(
     135deg,
@@ -709,13 +706,13 @@ input:checked + .toggle-slider:before {
   );
   color: white;
   border-color: var(--primary-color);
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--primary-color) 40%, transparent);
   transform: scale(1.02);
 }
 
 .preset-button.active:hover {
   transform: scale(1.02) translateY(-1px);
-  box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 25px color-mix(in srgb, var(--primary-color) 50%, transparent);
 }
 
 .reset-container {
@@ -791,7 +788,7 @@ footer {
   color: var(--text-light);
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .rate-btn {
@@ -812,7 +809,7 @@ footer {
 }
 
 .mode-button:not(.active):hover {
-  background-color: rgba(99, 102, 241, 0.08);
+  background-color: color-mix(in srgb, var(--primary-color) 8%, transparent);
   color: var(--text-color);
 }
 
@@ -825,7 +822,7 @@ footer {
   color: #ffffff;
   box-shadow:
     inset 0 -2px 0 rgba(0, 0, 0, 0.15),
-    0 0 15px rgba(99, 102, 241, 0.3);
+    0 0 15px color-mix(in srgb, var(--primary-color) 30%, transparent);
 }
 
 /* Tooltip centrado y más ancho */
@@ -878,7 +875,7 @@ footer {
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.875rem;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: var(--shadow-sm);
 }
 
@@ -934,11 +931,6 @@ footer {
 
 .reload-banner:active {
   transform: scale(0.98);
-}
-
-.reload-banner:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
 }
 
 .reload-banner[hidden] {
@@ -1058,7 +1050,7 @@ footer {
   border-radius: 9999px;
   padding: 3px;
   min-width: 132px;
-  height: 32px;
+  height: var(--control-size);
 }
 
 .segment-btn {
@@ -1091,7 +1083,7 @@ footer {
   color: var(--text-color);
   box-shadow:
     var(--shadow-sm),
-    0 0 0 1px rgba(99, 102, 241, 0.15);
+    0 0 0 1px color-mix(in srgb, var(--primary-color) 15%, transparent);
 }
 
 .segment-btn.active img {
@@ -1155,29 +1147,23 @@ footer {
   border: 0;
 }
 
-:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
+:focus-visible,
+.control-btn:focus-visible,
+.announcement-dismiss:focus-visible,
+.reload-banner:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
-.control-btn:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
-.mode-button:focus-visible {
-  outline: 2px solid var(--primary-color);
+.mode-button:focus-visible,
+.dropdown-item:focus-visible {
+  outline: var(--focus-ring);
   outline-offset: -2px;
 }
 
 .segment-btn:focus-visible {
-  outline: 2px solid var(--primary-color);
+  outline: var(--focus-ring);
   outline-offset: 0;
-}
-
-.dropdown-item:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: -2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
