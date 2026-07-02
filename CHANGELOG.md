@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [2.5.1] - 2026-07-02
+
+### Added
+
+- **Rate override detection**: when the user changes playback speed on YouTube while in rate mode, the extension now stops fighting the user's speed choice instead of continuously resetting it. Tuning resumes automatically when the user returns to 1x speed. Includes 21 new unit tests for the `classifyRateChange` pure function.
+- **`classifyRateChange` pure module**: extracted to `src/content/rate-override.ts` with 1e-4/1e-3 SELF/BASE thresholds, exported and independently testable.
+
+### Changed
+
+- **`injected.ts`**: added `overriddenMedia` Set, split `ratechange`/`seeked` handlers, added `handleRateChange` with override detection, guards in `reapplyConfig`/`onMediaPlaying`/`applyConfig` to respect override state.
+- **Override persists through frequency changes**: only mode or enabled toggle resets the override state — changing the tuning frequency while the user is at a custom speed keeps their speed choice intact.
+
 ## [2.5.0] - 2026-07-02
 
 ### Changed
