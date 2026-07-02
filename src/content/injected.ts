@@ -1,6 +1,7 @@
 import { loadWorklet, applyPitch } from "./audio-graph";
 import type { Algorithm } from "./audio-graph";
 import { isDRMHost } from "../shared/drm";
+import { classifyRateChange } from "./rate-override";
 
 const IDEMPOTENCY_KEY = "__trueResonance_injected";
 
@@ -97,6 +98,8 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
 
   const registeredMedia = new Set<HTMLMediaElement>();
 
+  const overriddenMedia = new Set<HTMLMediaElement>();
+
   function isCrossOrigin(url: string): boolean {
     try {
       return (
@@ -151,12 +154,38 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
   function reapplyConfig(media: HTMLMediaElement): void {
     if (!config || !config.enabled) return;
     if (config.mode === "rate") {
+      if (overriddenMedia.has(media)) return;
       if (media.playbackRate !== config.playbackRate) {
         media.playbackRate = config.playbackRate;
       }
     } else if (activeCtx && activeCtx.state !== "closed") {
       activeCtx.updatePitch(config.pitchRatio);
     }
+  }
+
+  function handleRateChange(media: HTMLMediaElement): void {
+    if (!config || !config.enabled) return;
+    if (config.mode !== "rate") {
+      reapplyConfig(media);
+      return;
+    }
+
+    const kind = classifyRateChange(media.playbackRate, config.playbackRate);
+
+    if (kind === "self") {
+      overriddenMedia.delete(media);
+      return;
+    }
+
+    if (kind === "base") {
+      overriddenMedia.delete(media);
+      media.preservesPitch = false;
+      media.playbackRate = config.playbackRate;
+      return;
+    }
+
+    overriddenMedia.add(media);
+    media.preservesPitch = true;
   }
 
   async function onMediaPlaying(media: HTMLMediaElement): Promise<void> {
@@ -189,6 +218,10 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
     }
 
     if (config.mode === "rate") {
+      if (overriddenMedia.has(media)) {
+        media.preservesPitch = true;
+        return;
+      }
       media.preservesPitch = false;
       media.playbackRate = config.playbackRate;
       return;
@@ -242,7 +275,7 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
     media.addEventListener("play", () => void onMediaPlaying(media));
     media.addEventListener("loadstart", () => void onMediaPlaying(media));
     media.addEventListener("seeked", () => reapplyConfig(media));
-    media.addEventListener("ratechange", () => reapplyConfig(media));
+    media.addEventListener("ratechange", () => handleRateChange(media));
 
     if (!media.paused && media.currentTime > 0 && media.readyState >= 2) {
       void onMediaPlaying(media);
@@ -319,6 +352,14 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
   }
 
   function applyConfig(newConfig: InjectedConfig): void {
+    const oldConfig = config;
+    if (
+      oldConfig &&
+      (oldConfig.mode !== newConfig.mode ||
+        oldConfig.enabled !== newConfig.enabled)
+    ) {
+      overriddenMedia.clear();
+    }
     config = newConfig;
     tier2Requested = false;
 
@@ -341,8 +382,12 @@ if (!(window as unknown as Record<string, unknown>)[IDEMPOTENCY_KEY]) {
         media.preservesPitch = true;
         media.playbackRate = 1;
       } else if (newConfig.mode === "rate") {
-        media.preservesPitch = false;
-        media.playbackRate = newConfig.playbackRate;
+        if (overriddenMedia.has(media)) {
+          media.preservesPitch = true;
+        } else {
+          media.preservesPitch = false;
+          media.playbackRate = newConfig.playbackRate;
+        }
       } else {
         media.preservesPitch = true;
         media.playbackRate = newConfig.playbackRate;
